@@ -1,0 +1,115 @@
+/* Fond général */
+.root {
+    -fx-background-color: linear-gradient(to bottom, #1e1e2f, #2b2b3c);
+    -fx-font-family: "Arial";
+}
+
+/* Titre */
+.title-label {
+    -fx-font-size: 28px;
+    -fx-text-fill: #ffd700;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, black, 8, 0.5, 2, 2);
+}
+
+/* Champs texte */
+.text-field, .password-field {
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-background-color: #ffffff;
+    -fx-padding: 8 12 8 12;
+    -fx-font-size: 14px;
+    -fx-pref-width: 220px;
+}
+
+/* Bouton */
+.button {
+    -fx-background-color: linear-gradient(to bottom, #ff9800, #e65100);
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-padding: 8 20 8 20;
+}
+.btn-primary {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.btn-secondary {
+    -fx-background-color: #2ecc71;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.message-label {
+    -fx-text-fill: red;
+    -fx-font-weight: bold;
+}
+
+.forgot-password-link {
+    -fx-text-fill: #ffcc00;
+    -fx-font-size: 12px;
+    -fx-underline: true;
+    -fx-cursor: hand;
+}
+.forgot-password-link:hover {
+    -fx-text-fill: #ffd633;
+}
+
+
+/* Champs d'inscription */
+.register-field {
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-background-color: #ffffff;
+    -fx-padding: 8 12 8 12;
+    -fx-font-size: 14px;
+    -fx-pref-width: 250px;
+}
+
+/* Boutons d'inscription */
+.register-button {
+    -fx-background-color: linear-gradient(to bottom, #2ecc71, #27ae60);
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-padding: 8 20 8 20;
+}
+
+/* Labels pour les messages */
+.register-message-label {
+    -fx-text-fill: red;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+/* Question secrète */
+.secret-question-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #ffd700;
+    -fx-font-weight: bold;
+}
+
+.secret-question-field {
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-background-color: #ffffff;
+    -fx-padding: 6 10 6 10;
+    -fx-font-size: 14px;
+    -fx-pref-width: 250px;
+}
+
+/* Lien retour ou autre action */
+.action-link {
+    -fx-text-fill: #3498db;
+    -fx-font-size: 12px;
+    -fx-underline: true;
+    -fx-cursor: hand;
+}
+
+.action-link:hover {
+    -fx-text-fill: #5dade2;
+}
