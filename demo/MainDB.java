@@ -119,6 +119,7 @@ public class MainDB {
             }
 
             try (Connection conn = DriverManager.getConnection(url);
+
                 Statement stmt = conn.createStatement()) {
 
                 System.out.println("✅ Connecté à SQLite !");
@@ -138,7 +139,7 @@ public class MainDB {
         }
 
 
-        void insertIntoUsers(String nom, String password) {
+    void insertIntoUsers(String nom, String password) {
             String sql = "INSERT INTO users(nom, password) VALUES(?, ?)";
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                 pstmt.setString(1, nom);
@@ -172,6 +173,41 @@ public class MainDB {
             System.out.println("Error: " + e.getMessage());
         }
     }
+
+    void insertIntoStatistiques(int id, String biographie) {
+        String sql = "INSERT INTO fiches_personnages(id, biographie) VALUES(?, ?, ?, ?)";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            pstmt.setString(2, biographie);
+            pstmt.executeUpdate();
+            System.out.println("Personnage ajoute !");
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    void insertIntoFichesPersonnages(int id, String nom, int valeur, int x, int y) {
+        String sql = "INSERT INTO statistiques(id, nom, valeur, x, y) VALUES(?, ?, ?, ?)";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            pstmt.setString(2, nom);
+            pstmt.setInt(3, valeur);
+            pstmt.setInt(4, x);
+            pstmt.setInt(5, y);
+            pstmt.executeUpdate();
+            System.out.println("Personnage ajoute !");
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    String sqlCreate = "CREATE TABLE IF NOT EXISTS statistiques ("
+                            + " id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                            + " nom TEXT NOT NULL,"
+                            + " valeur TEXT NOT NULL,"
+                            + " x INTEGER NOT NULL,"
+                            + " y INTEGER NOT NULL"
+                + ");";
 
     void selectTest() {
         String sqlSelect = "SELECT id, nom, password FROM users";
