@@ -6,8 +6,10 @@
 /home/pc-dell/Bureau/PROJETG5/ProjetL3-/demo/src/main/java/com/project/jdr/model/Portrait.java
 /home/pc-dell/Bureau/PROJETG5/ProjetL3-/demo/src/main/java/com/project/jdr/views/RegistrationView.java
 /home/pc-dell/Bureau/PROJETG5/ProjetL3-/demo/src/main/java/com/project/jdr/views/LoginView.java
+/home/pc-dell/Bureau/PROJETG5/ProjetL3-/demo/src/main/java/com/project/jdr/controllers/ForgotPasswordController.java
 /home/pc-dell/Bureau/PROJETG5/ProjetL3-/demo/src/main/java/com/project/jdr/model/Personnage.java
 /home/pc-dell/Bureau/PROJETG5/ProjetL3-/demo/src/main/java/com/project/jdr/model/FichePersonnage.java
 /home/pc-dell/Bureau/PROJETG5/ProjetL3-/demo/src/main/java/com/project/jdr/controllers/RegistrationController.java
 /home/pc-dell/Bureau/PROJETG5/ProjetL3-/demo/src/main/java/com/project/jdr/model/Stats.java
 /home/pc-dell/Bureau/PROJETG5/ProjetL3-/demo/src/main/java/com/project/jdr/model/Equipement.java
+/home/pc-dell/Bureau/PROJETG5/ProjetL3-/demo/src/main/java/com/project/jdr/views/ForgotPasswordView.java

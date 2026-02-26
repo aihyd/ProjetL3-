@@ -3,8 +3,10 @@ com/project/jdr/views/RegistrationView.class
 com/project/jdr/views/LoginView.class
 com/project/jdr/model/Portrait.class
 com/project/jdr/model/Equipement.class
+com/project/jdr/controllers/ForgotPasswordController.class
 com/project/jdr/controllers/LoginController.class
 com/project/jdr/AppTest.class
+com/project/jdr/views/ForgotPasswordView.class
 com/project/jdr/model/Stats.class
 com/project/jdr/model/Competence.class
 com/project/jdr/model/gestionmodel.class

@@ -1,5 +1,7 @@
 package com.project.jdr;
 
+import com.project.jdr.views.ForgotPasswordView;
+import com.project.jdr.controllers.ForgotPasswordController;
 import com.project.jdr.controllers.LoginController;
 import com.project.jdr.views.LoginView;
 import com.project.jdr.views.RegistrationView;
@@ -34,6 +36,14 @@ public class AppTest extends Application {
         scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
         primaryStage.setScene(scene);
     }
+
+    public void showForgotPassword() {
+    ForgotPasswordView forgotPasswordView = new ForgotPasswordView();
+    new ForgotPasswordController(forgotPasswordView, this);
+    Scene scene = new Scene(forgotPasswordView.getRoot(), 400, 500);
+    scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
+    primaryStage.setScene(scene);
+}
 
     public static void main(String[] args) {
         launch(args);

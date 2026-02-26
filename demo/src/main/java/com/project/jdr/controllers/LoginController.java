@@ -10,5 +10,6 @@ public class LoginController {
         view.getBtnConnexion().setOnAction(e -> {
            
         });
+        view.getForgotPasswordLink().setOnAction(e -> app.showForgotPassword());
     }
 }
