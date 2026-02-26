@@ -12,6 +12,12 @@ import javafx.scene.layout.VBox;
 public class LoginView {
 
     private VBox root;
+    private TextField Username;
+    private PasswordField passwordField;
+    private Hyperlink forgotPasswordLink ;
+    private Button btnConnexion;
+    private Button btnInscription;
+    private Label message;
 
     public LoginView() {
 
@@ -21,29 +27,29 @@ public class LoginView {
         Label titre = new Label("JDP Login");
         titre.getStyleClass().add("title-label");
 
-        TextField Username = new TextField();
+         this.Username = new TextField();
         Username.setPromptText("User Name");
         Username.getStyleClass().add("User Name");
 
-        PasswordField passwordField = new PasswordField();
+        this.passwordField = new PasswordField();
         passwordField.setPromptText("Password");
         passwordField.getStyleClass().add("Password");
 
         
-        Hyperlink forgotPasswordLink = new Hyperlink("Forgot your password?");
+        this.forgotPasswordLink = new Hyperlink("Forgot your password?");
         forgotPasswordLink.getStyleClass().add("forgot-password-link");
         forgotPasswordLink.setOnAction(e -> {
             System.out.println("Rediriger vers la récupération de mot de passe...");
          
         });
 
-        Button btnConnexion = new Button("Login");
+        this.btnConnexion = new Button("Login");
         btnConnexion.getStyleClass().add("btn-primary");
 
-        Button btnInscription = new Button("Register");
+        this.btnInscription = new Button("Register");
         btnInscription.getStyleClass().add("btn-secondary");
 
-        Label message = new Label();
+        this.message = new Label();
         message.getStyleClass().add("message-label");
 
         root.getChildren().addAll(
@@ -56,6 +62,14 @@ public class LoginView {
             message
         );
     }
+public TextField getUsername() { return Username; }
+public PasswordField getPasswordField() { return passwordField; }
+public Hyperlink getForgotPasswordLink() { return forgotPasswordLink; }
+public Button getBtnConnexion() { return btnConnexion; }
+public Button getBtnInscription() { return btnInscription; }
+public Label getMessage() { return message; }
+
+
 
     public Parent getRoot() {
         return root;

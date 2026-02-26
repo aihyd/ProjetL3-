@@ -13,4 +13,8 @@ public class Equipement {
     public String getNom() {
         return nom;
     }
+
+    public String getDescription(){
+        return description;
+    }
 }
