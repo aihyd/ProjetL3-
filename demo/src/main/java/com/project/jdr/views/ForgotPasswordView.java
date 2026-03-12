@@ -1,5 +1,6 @@
 package com.project.jdr.views;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -19,46 +20,55 @@ public class ForgotPasswordView {
     private TextField secretAnswerField;
     private PasswordField newPasswordField;
     private Button resetButton;
-    private Label  backToLogin;
+    private Label backToLogin;
 
     public ForgotPasswordView() {
         root = new VBox(15);
         root.setAlignment(Pos.CENTER);
+        root.setPadding(new Insets(30));
 
+        // Titre identique à Registration
         title = new Label("Forgot Password");
         title.getStyleClass().add("title-label");
 
+        // Champ username
         usernameField = new TextField();
         usernameField.setPromptText("Enter your username");
-        usernameField.getStyleClass().add("text-field");
+        usernameField.getStyleClass().add("register-field");
 
+        // Bouton Verify (orange)
         verifyButton = new Button("Verify");
-        verifyButton.getStyleClass().add("btn-primary");
+        verifyButton.getStyleClass().add("button");
 
+        // Message label
         messageLabel = new Label();
-        messageLabel.getStyleClass().add("message-label");
+        messageLabel.getStyleClass().add("register-message-label");
 
+        // Question secrète label
         secretQuestionLabel = new Label("Your secret question will appear here");
         secretQuestionLabel.getStyleClass().add("secret-question-label");
         secretQuestionLabel.setVisible(false);
 
+        // Réponse à la question secrète
         secretAnswerField = new TextField();
         secretAnswerField.setPromptText("Answer to secret question");
-        secretAnswerField.getStyleClass().add("text-field");
+        secretAnswerField.getStyleClass().add("register-field");
         secretAnswerField.setVisible(false);
 
+        // Nouveau mot de passe
         newPasswordField = new PasswordField();
         newPasswordField.setPromptText("New password");
-        newPasswordField.getStyleClass().add("text-field");
+        newPasswordField.getStyleClass().add("register-field");
         newPasswordField.setVisible(false);
 
+        // Bouton Reset (vert comme Login/Register)
         resetButton = new Button("Reset Password");
-        resetButton.getStyleClass().add("btn-primary");
+        resetButton.getStyleClass().add("register-button");
         resetButton.setVisible(false);
 
-         backToLogin = new Label("Back to Login");
+        // Lien retour
+        backToLogin = new Label("Back to Login");
         backToLogin.getStyleClass().add("action-link");
-        backToLogin.setVisible(false);
 
         root.getChildren().addAll(
             title,
@@ -74,9 +84,6 @@ public class ForgotPasswordView {
     }
 
     public Parent getRoot() { return root; }
-
-
-    public Label getTitle() { return title; }
     public TextField getUsernameField() { return usernameField; }
     public Button getVerifyButton() { return verifyButton; }
     public Label getMessageLabel() { return messageLabel; }

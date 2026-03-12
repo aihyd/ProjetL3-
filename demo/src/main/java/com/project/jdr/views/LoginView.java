@@ -1,9 +1,9 @@
 package com.project.jdr.views;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -12,66 +12,64 @@ import javafx.scene.layout.VBox;
 public class LoginView {
 
     private VBox root;
-    private TextField Username;
+    private TextField usernameField;
     private PasswordField passwordField;
-    private Hyperlink forgotPasswordLink ;
     private Button btnConnexion;
     private Button btnInscription;
-    private Label message;
+    private Label forgotPasswordLink;
+    private Label backToLogin;
+    private Label messageLabel;
 
     public LoginView() {
-
         root = new VBox(15);
         root.setAlignment(Pos.CENTER);
+        root.setPadding(new Insets(30));
 
-        Label titre = new Label("JDP Login");
-        titre.getStyleClass().add("title-label");
+        Label title = new Label("JDP Login");
+        title.getStyleClass().add("title-label");
 
-         this.Username = new TextField();
-        Username.setPromptText("User Name");
-        Username.getStyleClass().add("User Name");
+        usernameField = new TextField();
+        usernameField.setPromptText("Username");
+        usernameField.getStyleClass().add("register-field");
 
-        this.passwordField = new PasswordField();
+        passwordField = new PasswordField();
         passwordField.setPromptText("Password");
-        passwordField.getStyleClass().add("Password");
+        passwordField.getStyleClass().add("register-field");
 
-        
-        this.forgotPasswordLink = new Hyperlink("Forgot your password?");
-        forgotPasswordLink.getStyleClass().add("forgot-password-link");
-        forgotPasswordLink.setOnAction(e -> {
-            System.out.println("Rediriger vers la récupération de mot de passe...");
-         
-        });
+        btnConnexion = new Button("Login");
+        btnConnexion.getStyleClass().add("register-button");
 
-        this.btnConnexion = new Button("Login");
-        btnConnexion.getStyleClass().add("btn-primary");
+        btnInscription = new Button("Register");
+        btnInscription.getStyleClass().add("button");
 
-        this.btnInscription = new Button("Register");
-        btnInscription.getStyleClass().add("btn-secondary");
+        forgotPasswordLink = new Label("Forgot Password?");
+        forgotPasswordLink.getStyleClass().add("action-link");
 
-        this.message = new Label();
-        message.getStyleClass().add("message-label");
+        messageLabel = new Label();
+        messageLabel.getStyleClass().add("register-message-label");
+
+        backToLogin = new Label("Back to Login");
+        backToLogin.getStyleClass().add("action-link");
+        backToLogin.setVisible(false);
 
         root.getChildren().addAll(
-            titre,
-            Username,
+            title,
+            usernameField,
             passwordField,
-            forgotPasswordLink, 
             btnConnexion,
             btnInscription,
-            message
+            forgotPasswordLink,
+            messageLabel,
+            backToLogin
         );
     }
-public TextField getUsername() { return Username; }
-public PasswordField getPasswordField() { return passwordField; }
-public Hyperlink getForgotPasswordLink() { return forgotPasswordLink; }
-public Button getBtnConnexion() { return btnConnexion; }
-public Button getBtnInscription() { return btnInscription; }
-public Label getMessage() { return message; }
 
-
-
-    public Parent getRoot() {
-        return root;
-    }
+    public Parent getRoot() { return root; }
+    public TextField getUsernameField() { return usernameField; }
+    public PasswordField getPasswordField() { return passwordField; }
+    public Button getBtnConnexion() { return btnConnexion; }
+    public Button getBtnInscription() { return btnInscription; }
+    public Label getForgotPasswordLink() { return forgotPasswordLink; }
+    public Label getMessageLabel() { return messageLabel; }
+    public Label getBackToLogin() { return backToLogin; }
 }
