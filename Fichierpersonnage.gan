@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2026-02-02" view-index="0" gantt-divider-location="351" resource-divider-location="300" version="3.3.3322" locale="fr_FR">
+    <description/>
+    <view zooming-state="default:7" id="gantt-chart">
+        <field id="tpd3" name="Nom" width="200" order="0"/>
+        <field id="tpd4" name="Date de début" width="75" order="1"/>
+        <field id="tpd5" name="Date de fin" width="75" order="2"/>
+        <field id="tpd15" name="Notes" width="20" order="3"/>
+        <option id="filter.completedTasks" value="false"/>
+        <option id="filter.dueTodayTasks" value="false"/>
+        <option id="filter.overdueTasks" value="false"/>
+        <option id="filter.inProgressTodayTasks" value="false"/>
+        <option id="color.recent"><![CDATA[#6699ff #33ccff #ffff99]]></option>
+    </view>
+    <view id="resource-table">
+        <field id="0" name="Nom" width="210" order="0"/>
+        <field id="1" name="Rôle par défaut" width="86" order="1"/>
+    </view>
+    <!-- -->
+    <calendars>
+        <day-types>
+            <day-type id="0"/>
+            <day-type id="1"/>
+            <default-week id="1" name="default" sun="1" mon="0" tue="0" wed="0" thu="0" fri="0" sat="1"/>
+            <only-show-weekends value="false"/>
+            <overriden-day-types/>
+            <days/>
+        </day-types>
+    </calendars>
+    <tasks empty-milestones="true">
+        <taskproperties>
+            <taskproperty id="tpd0" name="type" type="default" valuetype="icon"/>
+            <taskproperty id="tpd1" name="priority" type="default" valuetype="icon"/>
+            <taskproperty id="tpd2" name="info" type="default" valuetype="icon"/>
+            <taskproperty id="tpd3" name="name" type="default" valuetype="text"/>
+            <taskproperty id="tpd4" name="begindate" type="default" valuetype="date"/>
+            <taskproperty id="tpd5" name="enddate" type="default" valuetype="date"/>
+            <taskproperty id="tpd6" name="duration" type="default" valuetype="int"/>
+            <taskproperty id="tpd7" name="completion" type="default" valuetype="int"/>
+            <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
+            <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
+        </taskproperties>
+        <task id="0" uid="3c790f950aa742c0a4efd7d3e58b0349" name="Mise en place collaborarif" color="#ffff99" meeting="false" start="2026-01-22" duration="6" complete="100" expand="true"/>
+        <task id="1" uid="2ed7d983f8234368bdc133e63297849f" name="Analyse et Uml" meeting="false" start="2026-01-30" duration="7" complete="0" expand="false">
+            <task id="2" uid="4161a055181f4871801008df591c005b" name="Analyse sujet" meeting="false" start="2026-01-30" duration="3" complete="0" expand="true"/>
+            <task id="3" uid="941eb7996b4447a483b7b9b3f74e613a" name="Diagramme de classe" meeting="false" start="2026-02-04" duration="3" complete="0" expand="true"/>
+            <task id="4" uid="06ef95618bdb4013a0c3e50d51de1c3e" name="Validation Uml" meeting="false" start="2026-02-06" duration="2" complete="0" expand="true"/>
+        </task>
+        <task id="5" uid="6e917e493f6d4f09957358a3e6646648" name="Models" meeting="false" start="2026-01-12" duration="68" complete="0" expand="false">
+            <task id="23" uid="d59c855253854b009d06a4b978b8cbb0" name="Utulisateur" meeting="false" start="2026-01-12" duration="25" complete="0" expand="true"/>
+            <task id="22" uid="5ff7999a204f49df8a6a8406c7ba7e5b" name="Stats" meeting="false" start="2026-02-10" duration="47" complete="0" expand="true"/>
+            <task id="21" uid="567ac3256d0242cd87ce8c763dada504" name="Portrait" meeting="false" start="2026-02-10" duration="47" complete="0" expand="true"/>
+            <task id="20" uid="424e2928eff84efb9135c9afe23a4120" name="Personnage" meeting="false" start="2026-02-10" duration="47" complete="0" expand="true"/>
+            <task id="19" uid="43f12e7477384b8fba37c484fdac976d" name="Fichepersonnage" meeting="false" start="2026-02-10" duration="47" complete="0" expand="true"/>
+            <task id="18" uid="168e3a887c6b429f9b4bfff7d7a256f7" name="Equipement" meeting="false" start="2026-02-10" duration="47" complete="0" expand="true"/>
+            <task id="17" uid="0e2198e938ec45bf92a0ce38a8414f7c" name="Competence" meeting="false" start="2026-02-10" duration="47" complete="0" expand="true"/>
+        </task>
+        <task id="6" uid="fd2cf60b17eb4ffbbdbce22159277d4d" name="Controlleurs" color="#6699ff" meeting="false" start="2026-02-25" duration="36" complete="0" expand="true"/>
+        <task id="7" uid="007e62fc50c54b6a9733521da2cd98fb" name="Designe et Vue" color="#33ccff" meeting="false" start="2026-02-20" duration="39" complete="30" expand="false">
+            <task id="25" uid="293c9239d7224d4ba1ba13b2264e848e" name="RegisterView" meeting="false" start="2026-02-20" duration="39" complete="0" expand="true"/>
+            <task id="24" uid="8ea9b50ef085400b89854278230d1bb1" name="Loginview" meeting="false" start="2026-02-20" duration="39" complete="0" expand="true"/>
+        </task>
+        <task id="8" uid="e8c5f6e1804547758761e0c092992da1" name="Tests" meeting="false" start="2026-04-17" duration="10" complete="0" expand="true">
+            <task id="9" uid="6e31285944bb41f7be7221ff2a9da730" name="tests MVC" meeting="false" start="2026-04-17" duration="3" complete="0" expand="true"/>
+            <task id="10" uid="16be797efd134b988fa902a9c67338be" name="correction beugs" meeting="false" start="2026-04-22" duration="7" complete="0" expand="true"/>
+        </task>
+        <task id="11" uid="041d8ec64b654b00b308ea56eca92f0b" name="Réalisation de rapport" meeting="false" start="2026-04-30" duration="7" complete="0" expand="false">
+            <task id="12" uid="b6bbeaedac234bc4b9994a80113b03e9" name="plan" meeting="false" start="2026-04-30" duration="2" complete="0" expand="true"/>
+            <task id="14" uid="1d74816bb4484a2797d0758449ac5db3" name="Schémas" meeting="false" start="2026-05-04" duration="1" complete="0" expand="true"/>
+            <task id="13" uid="afdbc7ecc3cb422f827d9a2fb83e8bca" name="Rédaction" meeting="false" start="2026-05-05" duration="3" complete="0" expand="true"/>
+            <task id="15" uid="92b343ad55c64c8596790f64155ba419" name="Relecture" meeting="false" start="2026-05-07" duration="2" complete="0" expand="true"/>
+        </task>
+        <task id="16" uid="49e6d193f0af46898cda27a8654b4bd7" name="Soutenance" meeting="false" start="2026-05-21" duration="1" complete="0" expand="true"/>
+    </tasks>
+    <resources>
+        <resource id="0" name="Dyhia" function="Default:0" contacts="" phone=""/>
+        <resource id="1" name="Clement" function="Default:0" contacts="" phone=""/>
+        <resource id="2" name="Djilali" function="Default:0" contacts="" phone=""/>
+    </resources>
+    <allocations>
+        <allocation task-id="2" resource-id="0" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="3" resource-id="0" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="4" resource-id="0" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="7" resource-id="0" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="9" resource-id="0" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="10" resource-id="0" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="12" resource-id="0" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="14" resource-id="0" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="13" resource-id="0" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="15" resource-id="0" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="16" resource-id="0" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="1" resource-id="0" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="25" resource-id="0" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="24" resource-id="0" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="2" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="3" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="4" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="5" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="9" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="10" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="12" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="14" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="13" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="15" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="16" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="1" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="23" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="22" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="21" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="20" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="19" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="18" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="17" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="2" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="3" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="4" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="5" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="6" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="9" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="10" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="12" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="14" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="13" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="15" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="16" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="1" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="23" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="22" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="21" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="20" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="19" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="18" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="17" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+    </allocations>
+    <vacations/>
+    <previous/>
+    <roles roleset-name="Default"/>
+</project>
