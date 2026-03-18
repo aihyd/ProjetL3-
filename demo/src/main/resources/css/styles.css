@@ -1,115 +1,399 @@
-/* Fond général */
+/* ═══════════════════════════════════════════════════════════
+   styles.css — JDP Application
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Fond global ────────────────────────────────────────── */
 .root {
     -fx-background-color: linear-gradient(to bottom, #1e1e2f, #2b2b3c);
     -fx-font-family: "Arial";
 }
 
-/* Titre */
+/* ── Racine commune (toutes les vues) ───────────────────── */
+.auth-root {
+    -fx-padding: 40;
+}
+
+/* ── Card (Login, Registration, Profile) ────────────────── */
+/* Pas de largeur fixe ici — elle est définie en Java        */
+/* pour être responsive (setMinWidth/setMaxWidth/setPrefWidth) */
+.auth-card {
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+    -fx-border-color: rgba(255, 255, 255, 0.10);
+    -fx-border-width: 1;
+    -fx-border-radius: 16;
+    -fx-background-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.45), 24, 0, 0, 6);
+}
+
+/* ── Titre principal ────────────────────────────────────── */
 .title-label {
-    -fx-font-size: 28px;
-    -fx-text-fill: #ffd700;
+    -fx-font-size: 24px;
     -fx-font-weight: bold;
-    -fx-effect: dropshadow(gaussian, black, 8, 0.5, 2, 2);
+    -fx-text-fill: #ffd700;
+    -fx-font-family: "Arial";
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.60), 6, 0.4, 1, 2);
 }
 
-/* Champs texte */
-.text-field, .password-field {
-    -fx-background-radius: 10;
+/* ── Sous-titre / subtitle ──────────────────────────────── */
+.auth-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: rgba(255, 255, 255, 0.38);
+    -fx-font-family: "Arial";
+}
+
+/* ── Séparateur ─────────────────────────────────────────── */
+.auth-divider {
+    -fx-background-color: rgba(255, 255, 255, 0.08);
+}
+
+/* ── Labels au-dessus des champs ────────────────────────── */
+.auth-field-label {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-text-fill: rgba(255, 215, 0, 0.65);
+    -fx-font-family: "Arial";
+}
+
+/* ── Champs texte / password ────────────────────────────── */
+/* Pas de pref-width fixe : c'est le layout Java qui         */
+/* impose setMaxWidth(MAX_VALUE) pour qu'ils s'étirent       */
+.auth-field,
+.text-field,
+.password-field {
+    -fx-background-color: rgba(255, 255, 255, 0.07);
+    -fx-border-color: rgba(255, 255, 255, 0.12);
+    -fx-border-width: 1;
     -fx-border-radius: 10;
-    -fx-background-color: #ffffff;
-    -fx-padding: 8 12 8 12;
-    -fx-font-size: 14px;
-    -fx-pref-width: 220px;
+    -fx-background-radius: 10;
+    -fx-text-fill: #ffffff;
+    -fx-prompt-text-fill: rgba(255, 255, 255, 0.28);
+    -fx-padding: 10 14 10 14;
+    -fx-font-size: 13px;
+    -fx-font-family: "Arial";
 }
 
-/* Bouton */
+.auth-field:focused,
+.text-field:focused,
+.password-field:focused {
+    -fx-border-color: rgba(255, 152, 0, 0.70);
+    -fx-background-color: rgba(255, 152, 0, 0.07);
+}
+
+/* ── ComboBox ───────────────────────────────────────────── */
+.combo-box {
+    -fx-background-color: rgba(255, 255, 255, 0.07);
+    -fx-border-color: rgba(255, 255, 255, 0.12);
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 13px;
+    -fx-font-family: "Arial";
+    -fx-padding: 2 8 2 8;
+}
+
+.combo-box .list-cell {
+    -fx-text-fill: #ffffff;
+    -fx-background-color: transparent;
+    -fx-font-family: "Arial";
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: #2b2b3c;
+    -fx-border-color: rgba(255, 255, 255, 0.12);
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: rgba(255, 152, 0, 0.15);
+}
+
+.combo-box-popup .list-cell:selected {
+    -fx-background-color: rgba(255, 152, 0, 0.25);
+}
+
+/* ── Bouton primaire ────────────────────────────────────── */
+.btn-primary,
 .button {
     -fx-background-color: linear-gradient(to bottom, #ff9800, #e65100);
     -fx-text-fill: white;
-    -fx-font-size: 16px;
+    -fx-font-size: 14px;
     -fx-font-weight: bold;
-    -fx-background-radius: 20;
-    -fx-padding: 8 20 8 20;
-}
-.btn-primary {
-    -fx-background-color: #3498db;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-}
-
-.btn-secondary {
-    -fx-background-color: #2ecc71;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-}
-
-.message-label {
-    -fx-text-fill: red;
-    -fx-font-weight: bold;
-}
-
-.forgot-password-link {
-    -fx-text-fill: #ffcc00;
-    -fx-font-size: 12px;
-    -fx-underline: true;
-    -fx-cursor: hand;
-}
-.forgot-password-link:hover {
-    -fx-text-fill: #ffd633;
-}
-
-
-/* Champs d'inscription */
-.register-field {
+    -fx-font-family: "Arial";
     -fx-background-radius: 10;
     -fx-border-radius: 10;
-    -fx-background-color: #ffffff;
-    -fx-padding: 8 12 8 12;
-    -fx-font-size: 14px;
-    -fx-pref-width: 250px;
+    -fx-padding: 11 20 11 20;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(230, 81, 0, 0.45), 10, 0.3, 0, 3);
 }
 
-/* Boutons d'inscription */
+.btn-primary:hover,
+.button:hover {
+    -fx-background-color: linear-gradient(to bottom, #ffaa20, #f06000);
+}
+
+.btn-primary:pressed,
+.button:pressed {
+    -fx-background-color: linear-gradient(to bottom, #e08000, #c04000);
+    -fx-effect: none;
+}
+
+/* ── Bouton secondaire ──────────────────────────────────── */
+.btn-secondary {
+    -fx-background-color: transparent;
+    -fx-border-color: rgba(255, 255, 255, 0.18);
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-text-fill: rgba(255, 255, 255, 0.65);
+    -fx-font-size: 13px;
+    -fx-font-family: "Arial";
+    -fx-padding: 10 20 10 20;
+    -fx-cursor: hand;
+}
+
+.btn-secondary:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.06);
+    -fx-border-color: rgba(255, 255, 255, 0.30);
+    -fx-text-fill: rgba(255, 255, 255, 0.85);
+}
+
+/* ── Bouton register (vert) ─────────────────────────────── */
 .register-button {
     -fx-background-color: linear-gradient(to bottom, #2ecc71, #27ae60);
     -fx-text-fill: white;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-background-radius: 20;
-    -fx-padding: 8 20 8 20;
-}
-
-/* Labels pour les messages */
-.register-message-label {
-    -fx-text-fill: red;
-    -fx-font-weight: bold;
-    -fx-font-size: 12px;
-}
-
-/* Question secrète */
-.secret-question-label {
     -fx-font-size: 14px;
-    -fx-text-fill: #ffd700;
     -fx-font-weight: bold;
-}
-
-.secret-question-field {
+    -fx-font-family: "Arial";
     -fx-background-radius: 10;
     -fx-border-radius: 10;
-    -fx-background-color: #ffffff;
-    -fx-padding: 6 10 6 10;
-    -fx-font-size: 14px;
-    -fx-pref-width: 250px;
+    -fx-padding: 11 20 11 20;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(39, 174, 96, 0.40), 10, 0.3, 0, 3);
 }
 
-/* Lien retour ou autre action */
+.register-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #3ddc80, #2abe6e);
+}
+
+.register-button:pressed {
+    -fx-background-color: linear-gradient(to bottom, #27ae60, #1e8449);
+    -fx-effect: none;
+}
+
+/* ── Messages ───────────────────────────────────────────── */
+.message-label,
+.register-message-label {
+    -fx-text-fill: #ff6b6b;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-font-family: "Arial";
+}
+
+/* ── Lien mot de passe oublié ───────────────────────────── */
+.forgot-password-link {
+    -fx-text-fill: rgba(255, 215, 0, 0.60);
+    -fx-font-size: 11px;
+    -fx-underline: true;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.forgot-password-link:hover {
+    -fx-text-fill: #ffd700;
+}
+
+/* ── Lien action ────────────────────────────────────────── */
 .action-link {
-    -fx-text-fill: #3498db;
+    -fx-text-fill: rgba(255, 152, 0, 0.70);
     -fx-font-size: 12px;
     -fx-underline: true;
     -fx-cursor: hand;
 }
 
 .action-link:hover {
-    -fx-text-fill: #5dade2;
+    -fx-text-fill: #ff9800;
+}
+
+/* ══════════════════════════════════════════════════════════
+   Styles spécifiques ProfileView
+   ══════════════════════════════════════════════════════════ */
+
+.profile-card-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffd700;
+    -fx-font-family: "Arial";
+}
+
+.profile-field-value {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Arial";
+}
+
+/* ListView ── */
+.profile-list-view {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.profile-list-view .list-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent rgba(255, 255, 255, 0.07) transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 0 4 0 4;
+}
+
+.profile-list-view .list-cell:selected {
+    -fx-background-color: rgba(255, 152, 0, 0.14);
+}
+
+.profile-list-view .list-cell:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.04);
+}
+
+/* Avatar initiales ── */
+.profile-avatar {
+    -fx-min-width: 34px;
+    -fx-min-height: 34px;
+    -fx-max-width: 34px;
+    -fx-max-height: 34px;
+    -fx-background-color: rgba(255, 152, 0, 0.18);
+    -fx-border-color: rgba(255, 152, 0, 0.45);
+    -fx-border-width: 1;
+    -fx-border-radius: 50;
+    -fx-background-radius: 50;
+    -fx-text-fill: #ff9800;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Arial";
+    -fx-alignment: center;
+}
+
+.profile-list-name {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Arial";
+}
+
+.profile-empty-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: rgba(255, 255, 255, 0.28);
+    -fx-font-family: "Arial";
+}
+
+/* ══════════════════════════════════════════════════════════
+   ContextMenu Paramètres
+   ══════════════════════════════════════════════════════════ */
+
+.settings-context-menu {
+    -fx-background-color: #2b2b3c;
+    -fx-border-color: rgba(255, 255, 255, 0.12);
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.55), 16, 0, 0, 4);
+    -fx-padding: 4 0 4 0;
+}
+
+/* Items normaux */
+.settings-context-menu .menu-item {
+    -fx-background-color: transparent;
+    -fx-padding: 9 18 9 18;
+}
+
+.settings-context-menu .menu-item:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.07);
+    -fx-background-radius: 6;
+}
+
+.settings-context-menu .menu-item .label {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 13px;
+    -fx-font-family: "Arial";
+}
+
+/* Item danger (supprimer compte) */
+.settings-context-menu .menu-item.settings-menu-item-danger {
+    -fx-background-color: transparent;
+}
+
+.settings-context-menu .menu-item.settings-menu-item-danger:hover {
+    -fx-background-color: rgba(255, 80, 80, 0.12);
+    -fx-background-radius: 6;
+}
+
+.settings-context-menu .menu-item.settings-menu-item-danger .label {
+    -fx-text-fill: #ff6b6b;
+    -fx-font-size: 13px;
+    -fx-font-family: "Arial";
+}
+
+/* Séparateur */
+.settings-context-menu .separator .line {
+    -fx-border-color: rgba(255, 255, 255, 0.08);
+    -fx-border-width: 1 0 0 0;
+}
+
+/* ══════════════════════════════════════════════════════════
+   ChangePasswordView & DeleteAccountView
+   ══════════════════════════════════════════════════════════ */
+
+/* Titre danger (rouge/or) pour la vue suppression */
+.title-label-danger {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ff6b6b;
+    -fx-font-family: "Arial";
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.60), 6, 0.4, 1, 2);
+}
+
+/* Sous-titre danger */
+.auth-subtitle-danger {
+    -fx-font-size: 12px;
+    -fx-text-fill: rgba(255, 107, 107, 0.65);
+    -fx-font-family: "Arial";
+}
+
+/* Bloc d'avertissement */
+.delete-warning-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: rgba(255, 255, 255, 0.55);
+    -fx-font-family: "Arial";
+    -fx-background-color: rgba(255, 80, 80, 0.08);
+    -fx-border-color: rgba(255, 80, 80, 0.25);
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 12 14 12 14;
+}
+
+/* Bouton danger (rouge) */
+.btn-danger {
+    -fx-background-color: linear-gradient(to bottom, #e74c3c, #c0392b);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Arial";
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-padding: 11 20 11 20;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(192, 57, 43, 0.50), 10, 0.3, 0, 3);
+}
+
+.btn-danger:hover {
+    -fx-background-color: linear-gradient(to bottom, #f05a4a, #d44235);
+}
+
+.btn-danger:pressed {
+    -fx-background-color: linear-gradient(to bottom, #c0392b, #a93226);
+    -fx-effect: none;
 }
