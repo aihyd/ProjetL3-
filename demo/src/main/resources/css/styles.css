@@ -22,7 +22,67 @@
     -fx-pref-width: 220px;
 }
 
+<<<<<<< Updated upstream
 /* Bouton */
+=======
+.combo-box .list-cell {
+    -fx-text-fill: #ffffff;
+    -fx-background-color: transparent;
+    -fx-font-family: "Arial";
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: #2b2b3c;
+    -fx-border-color: rgba(255, 255, 255, 0.12);
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: rgba(255, 152, 0, 0.15);
+}
+
+.combo-box-popup .list-cell:selected {
+    -fx-background-color: rgba(255, 152, 0, 0.25);
+}
+
+.text-area {
+    -fx-background-color: rgba(255, 255, 255, 0.07);
+    -fx-border-color: rgba(255, 255, 255, 0.12);
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 5;
+    -fx-font-size: 13px;
+    -fx-font-family: "Arial";
+}
+
+.text-area .content {
+    -fx-background-color: transparent;
+}
+
+.text-area .scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane {
+    -fx-background-color: transparent !important;
+    -fx-background: transparent !important;
+    -fx-border-width: 0 !important;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent !important;
+}
+
+.scroll-pane .corner {
+    -fx-background-color: transparent !important;
+}
+
+.btn-primary,
+>>>>>>> Stashed changes
 .button {
     -fx-background-color: linear-gradient(to bottom, #ff9800, #e65100);
     -fx-text-fill: white;
@@ -37,6 +97,20 @@
     -fx-font-weight: bold;
 }
 
+<<<<<<< Updated upstream
+=======
+.btn-primary:hover,
+.button:hover {
+    -fx-background-color: linear-gradient(to bottom, #ffaa20, #f06000);
+}
+
+.btn-primary:pressed,
+.button:pressed {
+    -fx-background-color: linear-gradient(to bottom, #e08000, #c04000);
+    -fx-effect: none;
+}
+
+>>>>>>> Stashed changes
 .btn-secondary {
     -fx-background-color: #2ecc71;
     -fx-text-fill: white;
@@ -58,6 +132,7 @@
     -fx-text-fill: #ffd633;
 }
 
+<<<<<<< Updated upstream
 
 /* Champs d'inscription */
 .register-field {
@@ -70,6 +145,8 @@
 }
 
 /* Boutons d'inscription */
+=======
+>>>>>>> Stashed changes
 .register-button {
     -fx-background-color: linear-gradient(to bottom, #2ecc71, #27ae60);
     -fx-text-fill: white;
@@ -79,20 +156,47 @@
     -fx-padding: 8 20 8 20;
 }
 
+<<<<<<< Updated upstream
 /* Labels pour les messages */
+=======
+.register-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #3ddc80, #2abe6e);
+}
+
+.register-button:pressed {
+    -fx-background-color: linear-gradient(to bottom, #27ae60, #1e8449);
+    -fx-effect: none;
+}
+
+.message-label,
+>>>>>>> Stashed changes
 .register-message-label {
     -fx-text-fill: red;
     -fx-font-weight: bold;
     -fx-font-size: 12px;
 }
 
+<<<<<<< Updated upstream
 /* Question secrète */
 .secret-question-label {
     -fx-font-size: 14px;
+=======
+.forgot-password-link {
+    -fx-text-fill: rgba(255, 215, 0, 0.60);
+    -fx-font-size: 11px;
+    -fx-underline: true;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.forgot-password-link:hover {
+>>>>>>> Stashed changes
     -fx-text-fill: #ffd700;
     -fx-font-weight: bold;
 }
 
+<<<<<<< Updated upstream
 .secret-question-field {
     -fx-background-radius: 10;
     -fx-border-radius: 10;
@@ -103,6 +207,8 @@
 }
 
 /* Lien retour ou autre action */
+=======
+>>>>>>> Stashed changes
 .action-link {
     -fx-text-fill: #3498db;
     -fx-font-size: 12px;
@@ -111,5 +217,169 @@
 }
 
 .action-link:hover {
+<<<<<<< Updated upstream
     -fx-text-fill: #5dade2;
+=======
+    -fx-text-fill: #ff9800;
+}
+
+
+.profile-card-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffd700;
+    -fx-font-family: "Arial";
+}
+
+.profile-field-value {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Arial";
+}
+
+.profile-list-view {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.profile-list-view .list-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent rgba(255, 255, 255, 0.07) transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 0 4 0 4;
+}
+
+.profile-list-view .list-cell:selected {
+    -fx-background-color: rgba(255, 152, 0, 0.14);
+}
+
+.profile-list-view .list-cell:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.04);
+}
+
+.profile-avatar {
+    -fx-min-width: 34px;
+    -fx-min-height: 34px;
+    -fx-max-width: 34px;
+    -fx-max-height: 34px;
+    -fx-background-color: rgba(255, 152, 0, 0.18);
+    -fx-border-color: rgba(255, 152, 0, 0.45);
+    -fx-border-width: 1;
+    -fx-border-radius: 50;
+    -fx-background-radius: 50;
+    -fx-text-fill: #ff9800;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Arial";
+    -fx-alignment: center;
+}
+
+.profile-list-name {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Arial";
+}
+
+.profile-empty-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: rgba(255, 255, 255, 0.28);
+    -fx-font-family: "Arial";
+}
+
+.settings-context-menu {
+    -fx-background-color: #2b2b3c;
+    -fx-border-color: rgba(255, 255, 255, 0.12);
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.55), 16, 0, 0, 4);
+    -fx-padding: 4 0 4 0;
+}
+
+.settings-context-menu .menu-item {
+    -fx-background-color: transparent;
+    -fx-padding: 9 18 9 18;
+}
+
+.settings-context-menu .menu-item:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.07);
+    -fx-background-radius: 6;
+}
+
+.settings-context-menu .menu-item .label {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 13px;
+    -fx-font-family: "Arial";
+}
+
+.settings-context-menu .menu-item.settings-menu-item-danger {
+    -fx-background-color: transparent;
+}
+
+.settings-context-menu .menu-item.settings-menu-item-danger:hover {
+    -fx-background-color: rgba(255, 80, 80, 0.12);
+    -fx-background-radius: 6;
+}
+
+.settings-context-menu .menu-item.settings-menu-item-danger .label {
+    -fx-text-fill: #ff6b6b;
+    -fx-font-size: 13px;
+    -fx-font-family: "Arial";
+}
+
+.settings-context-menu .separator .line {
+    -fx-border-color: rgba(255, 255, 255, 0.08);
+    -fx-border-width: 1 0 0 0;
+}
+
+.title-label-danger {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ff6b6b;
+    -fx-font-family: "Arial";
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.60), 6, 0.4, 1, 2);
+}
+
+.auth-subtitle-danger {
+    -fx-font-size: 12px;
+    -fx-text-fill: rgba(255, 107, 107, 0.65);
+    -fx-font-family: "Arial";
+}
+
+.delete-warning-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: rgba(255, 255, 255, 0.55);
+    -fx-font-family: "Arial";
+    -fx-background-color: rgba(255, 80, 80, 0.08);
+    -fx-border-color: rgba(255, 80, 80, 0.25);
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 12 14 12 14;
+}
+
+.btn-danger {
+    -fx-background-color: linear-gradient(to bottom, #e74c3c, #c0392b);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Arial";
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-padding: 11 20 11 20;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(192, 57, 43, 0.50), 10, 0.3, 0, 3);
+}
+
+.btn-danger:hover {
+    -fx-background-color: linear-gradient(to bottom, #f05a4a, #d44235);
+}
+
+.btn-danger:pressed {
+    -fx-background-color: linear-gradient(to bottom, #c0392b, #a93226);
+    -fx-effect: none;
+>>>>>>> Stashed changes
 }

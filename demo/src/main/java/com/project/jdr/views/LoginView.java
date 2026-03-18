@@ -18,6 +18,14 @@ public class LoginView {
         root = new VBox(15);
         root.setAlignment(Pos.CENTER);
 
+<<<<<<< Updated upstream
+=======
+        card.setMinWidth(280);
+        card.setMaxWidth(480);
+        card.setPrefWidth(Double.MAX_VALUE);
+
+        // ── Titre ─────────────────────────────────────────────────────────
+>>>>>>> Stashed changes
         Label titre = new Label("JDP Login");
         titre.getStyleClass().add("title-label");
 

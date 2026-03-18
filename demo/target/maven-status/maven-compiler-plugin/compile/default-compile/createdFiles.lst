@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 com\project\jdr\model\Personnage.class
 com\project\jdr\model\Stats.class
 com\project\jdr\views\RegistrationView.class
@@ -8,3 +9,37 @@ com\project\jdr\model\FichePersonnage.class
 com\project\jdr\model\Portrait.class
 com\project\jdr\model\Utilisateur.class
 com\project\jdr\AppTest.class
+=======
+com\project\jdr\controllers\ChangePasswordController.class
+com\project\jdr\dao\StatsDAO.class
+com\project\jdr\dao\CompetenceDAO.class
+com\project\jdr\model\Stats.class
+com\project\jdr\views\RegistrationView.class
+com\project\jdr\dao\EquipementDAO.class
+com\project\jdr\database\InitialisationDb.class
+com\project\jdr\model\Competence.class
+com\project\jdr\views\ForgotPasswordView.class
+com\project\jdr\views\PersonnageView.class
+com\project\jdr\model\FichePersonnage.class
+com\project\jdr\model\Utilisateur.class
+com\project\jdr\dao\PersonnageDAO.class
+com\project\jdr\controllers\RegistrationController.class
+com\project\jdr\model\Personnage.class
+com\project\jdr\views\ChangePasswordView.class
+com\project\jdr\dao\UtilisateurDAO.class
+com\project\jdr\model\Equipement.class
+com\project\jdr\controllers\LoginController.class
+com\project\jdr\AppTest.class
+com\project\jdr\controllers\ForgotPasswordController.class
+com\project\jdr\views\ProfileView.class
+com\project\jdr\views\LoginView.class
+com\project\jdr\dao\PortraitDAO.class
+com\project\jdr\database\ConnectionDb.class
+com\project\jdr\views\DeleteAccountView.class
+com\project\jdr\views\ProfileView$1.class
+com\project\jdr\controllers\DeleteAccountController.class
+com\project\jdr\dao\FichePersonnageDAO.class
+com\project\jdr\controllers\PersonnageController.class
+com\project\jdr\model\Portrait.class
+com\project\jdr\controllers\ProfileController.class
+>>>>>>> Stashed changes
