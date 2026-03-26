@@ -14,6 +14,7 @@ com/project/jdr/controllers/ProfileController.class
 com/project/jdr/controllers/LoginController.class
 com/project/jdr/model/Stats.class
 com/project/jdr/dao/EquipementDAO.class
+com/project/jdr/model/ElementFiche.class
 com/project/jdr/views/DeleteAccountView.class
 com/project/jdr/controllers/RegistrationController.class
 com/project/jdr/views/ProfileView.class

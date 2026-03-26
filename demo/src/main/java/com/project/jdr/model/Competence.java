@@ -1,24 +1,20 @@
 package com.project.jdr.model;
 
-public class Competence {
+public class Competence extends ElementFiche {
 
     private String nom;
     private String description;
-    private int x;
-    private int y;
 
     public Competence(String nom, String description) {
+        super();
         this.nom = nom;
         this.description = description;
-        this.x = 0;
-        this.y = 0;
     }
 
-    public Competence(String nom, String description, int x, int y) {
+    public Competence(int id, String nom, String description, int x, int y, double width, double height) {
+        super(id, x, y, width, height);
         this.nom = nom;
         this.description = description;
-        this.x = x;
-        this.y = y;
     }
 
     public String getNom() {
@@ -39,36 +35,5 @@ public class Competence {
         if (description != null) {
             this.description = description;
         }
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    public void setPosition(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    @Override
-    public String toString() {
-        return "Competence{" +
-                "nom='" + nom + '\'' +
-                ", description='" + description + '\'' +
-                ", x=" + x +
-                ", y=" + y +
-                '}';
     }
 }

@@ -1,21 +1,19 @@
 package com.project.jdr.model;
 
-public class Portrait {
+public class Portrait extends ElementFiche {
 
     private String cheminImage;
-    private int x;
-    private int y;
 
     public Portrait(String cheminImage) {
+        super();
         this.cheminImage = cheminImage;
-        this.x = 0;
-        this.y = 0;
+        this.width = 150;
+        this.height = 150;
     }
 
-    public Portrait(String cheminImage, int x, int y) {
+    public Portrait(int id, String cheminImage, int x, int y, double width, double height) {
+        super(id, x, y, width, height);
         this.cheminImage = cheminImage;
-        this.x = x;
-        this.y = y;
     }
 
     public String getCheminImage() {
@@ -26,26 +24,5 @@ public class Portrait {
         if (cheminImage != null && !cheminImage.trim().isEmpty()) {
             this.cheminImage = cheminImage;
         }
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    public void setPosition(int x, int y) {
-        this.x = x;
-        this.y = y;
     }
 }
