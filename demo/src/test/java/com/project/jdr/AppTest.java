@@ -1,4 +1,5 @@
 package com.project.jdr;
+import com.project.jdr.database.InitialisationDb;
 
 import com.project.jdr.controllers.LoginController;
 import com.project.jdr.views.LoginView;
@@ -14,6 +15,7 @@ public class AppTest extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        InitialisationDb.initialiser();
         this.primaryStage = primaryStage;
         showLogin();
     }
