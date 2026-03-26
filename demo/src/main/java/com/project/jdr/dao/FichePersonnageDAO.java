@@ -3,32 +3,35 @@ package com.project.jdr.dao;
 import com.project.jdr.database.ConnectionDb;
 import com.project.jdr.model.FichePersonnage;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class FichePersonnageDAO {
 
-    public boolean ajouterFiche(FichePersonnage fiche, int idPersonnage) {
+    public int creerFichePourPersonnage(int idPersonnage) {
         String sql = "INSERT INTO fiches_personnages(biographie, id_personnage) VALUES(?, ?)";
 
         try (Connection conn = ConnectionDb.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            pstmt.setString(1, fiche.getBiographie());
+            pstmt.setString(1, "");
             pstmt.setInt(2, idPersonnage);
             pstmt.executeUpdate();
-            return true;
+
+            try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
 
         } catch (SQLException e) {
-            System.out.println("Erreur ajout fiche personnage : " + e.getMessage());
-            return false;
+            System.out.println("Erreur création fiche : " + e.getMessage());
         }
+
+        return -1;
     }
 
-    public Integer recupererIdFiche(int idPersonnage) {
-        String sql = "SELECT id FROM fiches_personnages WHERE id_personnage = ?";
+    public FichePersonnage recupererFicheParPersonnage(int idPersonnage) {
+        String sql = "SELECT id, biographie FROM fiches_personnages WHERE id_personnage = ?";
 
         try (Connection conn = ConnectionDb.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -37,68 +40,33 @@ public class FichePersonnageDAO {
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getInt("id");
+                    return new FichePersonnage(
+                            rs.getInt("id"),
+                            rs.getString("biographie")
+                    );
                 }
             }
 
         } catch (SQLException e) {
-            System.out.println("Erreur récupération id fiche : " + e.getMessage());
+            System.out.println("Erreur récupération fiche : " + e.getMessage());
         }
 
         return null;
     }
 
-    public FichePersonnage chargerFiche(int idPersonnage) {
-        String sql = "SELECT biographie FROM fiches_personnages WHERE id_personnage = ?";
-        FichePersonnage fiche = null;
-
-        try (Connection conn = ConnectionDb.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setInt(1, idPersonnage);
-
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    fiche = new FichePersonnage();
-                    fiche.setBiographie(rs.getString("biographie"));
-                }
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Erreur chargement fiche : " + e.getMessage());
-        }
-
-        return fiche;
-    }
-
-    public boolean mettreAJourBiographie(int idPersonnage, String biographie) {
-        String sql = "UPDATE fiches_personnages SET biographie = ? WHERE id_personnage = ?";
+    public boolean mettreAJourBiographie(int idFiche, String biographie) {
+        String sql = "UPDATE fiches_personnages SET biographie = ? WHERE id = ?";
 
         try (Connection conn = ConnectionDb.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, biographie);
-            pstmt.setInt(2, idPersonnage);
+            pstmt.setInt(2, idFiche);
 
             return pstmt.executeUpdate() > 0;
 
         } catch (SQLException e) {
             System.out.println("Erreur mise à jour biographie : " + e.getMessage());
-            return false;
-        }
-    }
-
-    public boolean supprimerFiche(int idPersonnage) {
-        String sql = "DELETE FROM fiches_personnages WHERE id_personnage = ?";
-
-        try (Connection conn = ConnectionDb.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setInt(1, idPersonnage);
-            return pstmt.executeUpdate() > 0;
-
-        } catch (SQLException e) {
-            System.out.println("Erreur suppression fiche : " + e.getMessage());
             return false;
         }
     }

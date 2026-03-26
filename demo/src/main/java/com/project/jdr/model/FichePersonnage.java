@@ -5,6 +5,7 @@ import java.util.List;
 
 public class FichePersonnage {
 
+    private int id;
     private String biographie;
     private List<Stats> stats;
     private List<Competence> competences;
@@ -12,11 +13,28 @@ public class FichePersonnage {
     private Portrait portrait;
 
     public FichePersonnage() {
+        this.id = 0;
         this.biographie = "";
         this.stats = new ArrayList<>();
         this.competences = new ArrayList<>();
         this.equipements = new ArrayList<>();
         this.portrait = null;
+    }
+
+    public FichePersonnage(int id, String biographie) {
+        this();
+        this.id = id;
+        this.biographie = biographie != null ? biographie : "";
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        if (id >= 0) {
+            this.id = id;
+        }
     }
 
     public String getBiographie() {
