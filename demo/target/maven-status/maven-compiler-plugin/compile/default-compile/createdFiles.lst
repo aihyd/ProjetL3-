@@ -1,15 +1,3 @@
-<<<<<<< Updated upstream
-com\project\jdr\model\Personnage.class
-com\project\jdr\model\Stats.class
-com\project\jdr\views\RegistrationView.class
-com\project\jdr\views\LoginView.class
-com\project\jdr\model\Competence.class
-com\project\jdr\model\Equipement.class
-com\project\jdr\model\FichePersonnage.class
-com\project\jdr\model\Portrait.class
-com\project\jdr\model\Utilisateur.class
-com\project\jdr\AppTest.class
-=======
 com\project\jdr\controllers\ChangePasswordController.class
 com\project\jdr\dao\StatsDAO.class
 com\project\jdr\dao\CompetenceDAO.class
@@ -42,4 +30,3 @@ com\project\jdr\dao\FichePersonnageDAO.class
 com\project\jdr\controllers\PersonnageController.class
 com\project\jdr\model\Portrait.class
 com\project\jdr\controllers\ProfileController.class
->>>>>>> Stashed changes
