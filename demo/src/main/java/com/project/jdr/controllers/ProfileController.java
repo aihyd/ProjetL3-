@@ -20,5 +20,8 @@ public class ProfileController {
         view.getCreateCharacterButton().setOnAction(e -> {
             System.out.println("Créer un personnage");
         });
+        view.getCreateCharacterButton().setOnAction(e -> {
+    app.showCreateCharacter(idUtilisateur, username);
+});
     }
 }

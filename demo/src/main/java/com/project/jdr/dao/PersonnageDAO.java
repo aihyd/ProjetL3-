@@ -1,171 +1,85 @@
-package com.project.jdr.dao;
-
-import com.project.jdr.database.ConnectionDb;
-import com.project.jdr.model.Personnage;
+package com.project.jdr.database;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PersonnageDAO {
 
-    public boolean ajouterPersonnage(Personnage personnage, int idUtilisateur) {
-        String sql = "INSERT INTO personnages(nom, race, classe, niveau, id_user) VALUES(?, ?, ?, ?, ?)";
+    // Créer un personnage + sa fiche + ses stats
+    public static boolean creerPersonnage(String nom, String race, String classe,
+                                           int niveau, String biographie,
+                                           int force, int agilite, int intelligence, int endurance,
+                                           int idUser) {
+        try (Connection conn = ConnectionDb.getConnection()) {
+            conn.setAutoCommit(false);
 
-        try (Connection conn = ConnectionDb.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            // 1. Insérer le personnage
+            int idPersonnage = -1;
+            String sqlPersonnage = "INSERT INTO personnages (nom, race, classe, niveau, id_user) VALUES (?, ?, ?, ?, ?)";
+            try (PreparedStatement stmt = conn.prepareStatement(sqlPersonnage, Statement.RETURN_GENERATED_KEYS)) {
+                stmt.setString(1, nom);
+                stmt.setString(2, race);
+                stmt.setString(3, classe);
+                stmt.setInt(4, niveau);
+                stmt.setInt(5, idUser);
+                stmt.executeUpdate();
+                ResultSet rs = stmt.getGeneratedKeys();
+                if (rs.next()) idPersonnage = rs.getInt(1);
+            }
 
-            pstmt.setString(1, personnage.getNom());
-            pstmt.setString(2, personnage.getRace());
-            pstmt.setString(3, personnage.getClasse());
-            pstmt.setInt(4, personnage.getNiveau());
-            pstmt.setInt(5, idUtilisateur);
+            // 2. Insérer la fiche personnage
+            int idFiche = -1;
+            String sqlFiche = "INSERT INTO fiches_personnages (biographie, id_personnage) VALUES (?, ?)";
+            try (PreparedStatement stmt = conn.prepareStatement(sqlFiche, Statement.RETURN_GENERATED_KEYS)) {
+                stmt.setString(1, biographie);
+                stmt.setInt(2, idPersonnage);
+                stmt.executeUpdate();
+                ResultSet rs = stmt.getGeneratedKeys();
+                if (rs.next()) idFiche = rs.getInt(1);
+            }
 
-            pstmt.executeUpdate();
+            // 3. Insérer les stats
+            String sqlStat = "INSERT INTO statistiques (nom, valeur, x, y, id_fiche) VALUES (?, ?, 0, 0, ?)";
+            try (PreparedStatement stmt = conn.prepareStatement(sqlStat)) {
+                int[][] stats = {
+                    {force, 0}, {agilite, 1}, {intelligence, 2}, {endurance, 3}
+                };
+                String[] noms = {"Force", "Agilité", "Intelligence", "Endurance"};
+                for (int i = 0; i < noms.length; i++) {
+                    stmt.setString(1, noms[i]);
+                    stmt.setInt(2, stats[i][0]);
+                    stmt.setInt(3, idFiche);
+                    stmt.addBatch();
+                }
+                stmt.executeBatch();
+            }
+
+            conn.commit();
             return true;
 
         } catch (SQLException e) {
-            System.out.println("Erreur ajout personnage : " + e.getMessage());
+            System.err.println("Erreur creerPersonnage: " + e.getMessage());
             return false;
         }
     }
 
-    public Personnage rechercherParNomEtUtilisateur(String nom, int idUtilisateur) {
-        String sql = "SELECT nom, race, classe, niveau FROM personnages WHERE nom = ? AND id_user = ?";
-
-        try (Connection conn = ConnectionDb.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setString(1, nom);
-            pstmt.setInt(2, idUtilisateur);
-
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return new Personnage(
-                            rs.getString("nom"),
-                            rs.getString("race"),
-                            rs.getString("classe"),
-                            rs.getInt("niveau")
-                    );
-                }
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Erreur recherche personnage : " + e.getMessage());
-        }
-
-        return null;
-    }
-
-    public List<Personnage> listerPersonnagesParUtilisateur(int idUtilisateur) {
-        List<Personnage> personnages = new ArrayList<>();
-        String sql = "SELECT nom, race, classe, niveau FROM personnages WHERE id_user = ? ORDER BY nom";
-
-        try (Connection conn = ConnectionDb.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setInt(1, idUtilisateur);
-
-            try (ResultSet rs = pstmt.executeQuery()) {
-                while (rs.next()) {
-                    personnages.add(new Personnage(
-                            rs.getString("nom"),
-                            rs.getString("race"),
-                            rs.getString("classe"),
-                            rs.getInt("niveau")
-                    ));
-                }
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Erreur liste personnages : " + e.getMessage());
-        }
-
-        return personnages;
-    }
-
-    public Integer recupererIdPersonnage(String nom, int idUtilisateur) {
-        String sql = "SELECT id FROM personnages WHERE nom = ? AND id_user = ?";
-
-        try (Connection conn = ConnectionDb.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setString(1, nom);
-            pstmt.setInt(2, idUtilisateur);
-
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt("id");
-                }
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Erreur récupération id personnage : " + e.getMessage());
-        }
-
-        return null;
-    }
-
-    public boolean mettreAJourPersonnage(Personnage personnage, int idUtilisateur, String ancienNom) {
-        String sql = "UPDATE personnages SET nom = ?, race = ?, classe = ?, niveau = ? WHERE nom = ? AND id_user = ?";
-
-        try (Connection conn = ConnectionDb.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setString(1, personnage.getNom());
-            pstmt.setString(2, personnage.getRace());
-            pstmt.setString(3, personnage.getClasse());
-            pstmt.setInt(4, personnage.getNiveau());
-            pstmt.setString(5, ancienNom);
-            pstmt.setInt(6, idUtilisateur);
-
-            return pstmt.executeUpdate() > 0;
-
-        } catch (SQLException e) {
-            System.out.println("Erreur mise à jour personnage : " + e.getMessage());
-            return false;
-        }
-    }
-
-    public boolean supprimerPersonnage(String nom, int idUtilisateur) {
-        String sql = "DELETE FROM personnages WHERE nom = ? AND id_user = ?";
-
-        try (Connection conn = ConnectionDb.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setString(1, nom);
-            pstmt.setInt(2, idUtilisateur);
-
-            return pstmt.executeUpdate() > 0;
-
-        } catch (SQLException e) {
-            System.out.println("Erreur suppression personnage : " + e.getMessage());
-            return false;
-        }
-    }
-    public List<String> recupererNomsPersonnagesParUtilisateur(int idUtilisateur) {
+    // Récupérer les noms des personnages d'un utilisateur
+    public static List<String> getPersonnagesParUser(int idUser) {
         List<String> noms = new ArrayList<>();
-
-        String sql = "SELECT nom FROM personnages WHERE id_user = ? ORDER BY id DESC";
-
+        String sql = "SELECT nom FROM personnages WHERE id_user = ?";
         try (Connection conn = ConnectionDb.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setInt(1, idUtilisateur);
-
-            try (ResultSet rs = pstmt.executeQuery()) {
-                while (rs.next()) {
-                    noms.add(rs.getString("nom"));
-                }
-            }
-
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idUser);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) noms.add(rs.getString("nom"));
         } catch (SQLException e) {
-            System.out.println("Erreur récupération personnages : " + e.getMessage());
+            System.err.println("Erreur getPersonnages: " + e.getMessage());
         }
-
         return noms;
     }
 }

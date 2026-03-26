@@ -1,17 +1,20 @@
 package com.project.jdr;
-import com.project.jdr.database.InitialisationDb;
-import com.project.jdr.views.ChangePasswordView;
-import com.project.jdr.views.DeleteAccountView;
-import com.project.jdr.views.ForgotPasswordView;
 import com.project.jdr.controllers.ChangePasswordController;
+import com.project.jdr.controllers.CreateCharacterController;
 import com.project.jdr.controllers.DeleteAccountController;
 import com.project.jdr.controllers.ForgotPasswordController;
 import com.project.jdr.controllers.LoginController;
 import com.project.jdr.controllers.ProfileController;
+import com.project.jdr.controllers.RegistrationController;
+import com.project.jdr.database.InitialisationDb;
+import com.project.jdr.views.ChangePasswordView;
+import com.project.jdr.views.CreateCharacterView;
+import com.project.jdr.views.DeleteAccountView;
+import com.project.jdr.views.ForgotPasswordView;
 import com.project.jdr.views.LoginView;
 import com.project.jdr.views.ProfileView;
 import com.project.jdr.views.RegistrationView;
-import com.project.jdr.controllers.RegistrationController;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -84,6 +87,14 @@ public void showDeleteAccount(int idUtilisateur, String username) {
     Scene scene = new Scene(forgotPasswordView.getRoot(), 400, 500);
     scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
     primaryStage.setScene(scene);
+}
+   public void showCreateCharacter(int idUtilisateur, String username) {
+    CreateCharacterView view = new CreateCharacterView();
+    new CreateCharacterController(view, this, idUtilisateur, username);
+    Scene scene = new Scene(view.getRoot(), 800, 700);
+    scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
+    primaryStage.setScene(scene);
+    primaryStage.show();
 }
 
     public static void main(String[] args) {
