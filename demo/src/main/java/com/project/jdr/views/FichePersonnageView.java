@@ -357,22 +357,22 @@ public class FichePersonnageView {
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.ALWAYS);
 
-            Label stars = new Label(buildStars(stat.getValeur()));
-            stars.setStyle("-fx-font-size: 16px; -fx-text-fill: #ffd700;");
+            Label valeur = new Label(String.valueOf(stat.getValeur()));
+            valeur.setStyle("-fx-font-size: 18px; -fx-text-fill: #ffd700; -fx-font-weight: bold;");
 
             content.widthProperty().addListener((obs, o, n) -> {
                 double w = n.doubleValue();
-                double starSize = clamp(12 + (w - 140) / 260.0 * 10, 12, 22);
+                double valueSize = clamp(12 + (w - 140) / 260.0 * 10, 12, 22);
                 double nomSize  = clamp(8  + (w - 140) / 260.0 * 4,  8,  12);
-                stars.setStyle(String.format(
-                    "-fx-font-size: %.0fpx; -fx-text-fill: #ffd700;", starSize));
+                valeur.setStyle(String.format(
+                    "-fx-font-size: %.0fpx; -fx-text-fill: #ffd700; -fx-font-weight: bold;", valueSize));
                 nom.setStyle(String.format(
                     "-fx-font-size: %.0fpx; -fx-font-weight: bold;" +
                     "-fx-text-fill: rgba(255,215,0,0.50);" +
                     "-fx-font-family: Arial; -fx-min-width: 70px;", nomSize));
             });
 
-            row.getChildren().addAll(nom, spacer, stars);
+            row.getChildren().addAll(nom, spacer, valeur);
 
             Region rowSep = new Region();
             rowSep.setPrefHeight(1);
@@ -463,11 +463,6 @@ public class FichePersonnageView {
 
         content.getChildren().addAll(nomLabel, descLabel);
         return new FicheCard("Equipement", content, e.getId(), "equipement", CardColor.ORANGE);
-    }
-
-    private String buildStars(int v) {
-        v = Math.max(0, Math.min(5, v));
-        return "★".repeat(v) + "☆".repeat(5 - v);
     }
 
     private double clamp(double val, double min, double max) {

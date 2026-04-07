@@ -10,8 +10,10 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
@@ -23,6 +25,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 public class CreateCharacterView {
 
@@ -43,11 +46,11 @@ public class CreateCharacterView {
     // Biographie
     private TextArea biographieArea;
 
-    // Stats (étoiles)
-    private StarRating forceRating;
-    private StarRating agiliteRating;
-    private StarRating intelligenceRating;
-    private StarRating enduranceRating;
+    // Stats (entiers)
+    private Spinner<Integer> forceSpinner;
+    private Spinner<Integer> agiliteSpinner;
+    private Spinner<Integer> intelligenceSpinner;
+    private Spinner<Integer> enduranceSpinner;
 
     // Compétences
     private TextField competenceNomField;
@@ -61,100 +64,6 @@ public class CreateCharacterView {
 
     // Message
     private Label messageLabel;
-
-    // ═════════════════════════════════════════════════════════════════════
-    // StarRating — hover géré sur le HBox conteneur, pas sur chaque étoile
-    // ═════════════════════════════════════════════════════════════════════
-    public static class StarRating extends HBox {
-
-        private static final int    MAX          = 5;
-        private static final String COLOR_ACTIVE = "#ffd700";
-        private static final String COLOR_HOVER  = "#ffdd55";
-        private static final String COLOR_EMPTY  = "rgba(255,255,255,0.20)";
-
-        private final Label[] stars  = new Label[MAX];
-        private int           value  = 1;
-        private int           hoverIndex = -1; // -1 = pas de hover
-
-        public StarRating()              { this(1); }
-        public StarRating(int initial)   {
-            super(0);
-            setAlignment(Pos.CENTER_LEFT);
-            // Padding interne pour que la zone de hover soit continue entre étoiles
-            setSpacing(0);
-            this.value = clamp(initial);
-
-            for (int i = 0; i < MAX; i++) {
-                Label star = new Label("★");
-                star.setPadding(new Insets(2, 5, 2, 5)); // zone cliquable généreuse
-                star.setCursor(javafx.scene.Cursor.HAND);
-                star.setMouseTransparent(false);
-                stars[i] = star;
-            }
-
-            getChildren().addAll(stars);
-
-            // ── Hover sur le HBox entier, pas sur chaque Label ────────────
-            // Comme le HBox couvre tout l'espace, on détecte la position X
-            setOnMouseMoved(e -> {
-                int idx = getStarIndexAt(e.getX());
-                if (idx != hoverIndex) {
-                    hoverIndex = idx;
-                    repaint();
-                }
-            });
-
-            setOnMouseExited(e -> {
-                hoverIndex = -1;
-                repaint();
-            });
-
-            setOnMouseClicked(e -> {
-                int idx = getStarIndexAt(e.getX());
-                if (idx >= 0) setValue(idx + 1);
-            });
-
-            repaint();
-        }
-
-        /** Retourne l'index de l'étoile sous la position X dans le HBox. */
-        private int getStarIndexAt(double x) {
-            for (int i = 0; i < MAX; i++) {
-                Label s = stars[i];
-                if (x >= s.getBoundsInParent().getMinX()
-                        && x <= s.getBoundsInParent().getMaxX()) {
-                    return i;
-                }
-            }
-            // Fallback : si entre deux étoiles, prendre la plus proche
-            if (x < stars[0].getBoundsInParent().getMinX()) return 0;
-            if (x > stars[MAX-1].getBoundsInParent().getMaxX()) return MAX - 1;
-            return -1;
-        }
-
-        private void repaint() {
-            int fill = (hoverIndex >= 0) ? hoverIndex + 1 : value;
-            String color = (hoverIndex >= 0) ? COLOR_HOVER : COLOR_ACTIVE;
-            for (int i = 0; i < MAX; i++) {
-                stars[i].setStyle(
-                    "-fx-font-size: 28px;" +
-                    "-fx-text-fill: " + (i < fill ? color : COLOR_EMPTY) + ";"
-                );
-            }
-        }
-
-        public void setValue(int val) {
-            this.value = clamp(val);
-            hoverIndex = -1;
-            repaint();
-        }
-
-        public int getValue() { return value; }
-
-        private static int clamp(int v) { return Math.max(1, Math.min(MAX, v)); }
-    }
-
-    // ═════════════════════════════════════════════════════════════════════
 
     public CreateCharacterView() {
         root = new StackPane();
@@ -301,8 +210,8 @@ public class CreateCharacterView {
         classeCombo.setPromptText("Choisir une classe");
         classeCombo.setMaxWidth(Double.MAX_VALUE);
 
-        niveauSpinner = new Spinner<>(1, 20, 1);
-        niveauSpinner.setEditable(true);
+        niveauSpinner = new Spinner<>();
+        configureIntegerSpinner(niveauSpinner, 1, 20, 1);
         niveauSpinner.setMaxWidth(Double.MAX_VALUE);
         niveauSpinner.getStyleClass().add("spinner");
 
@@ -346,25 +255,24 @@ public class CreateCharacterView {
         Label sectionTitle = new Label("Statistiques");
         sectionTitle.getStyleClass().add("profile-card-title");
 
-        Label hint = new Label("Clique sur les étoiles pour noter chaque statistique de 1 à 5.");
+        Label hint = new Label("Saisis une valeur entière pour chaque statistique.");
         hint.setStyle("-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.30); -fx-font-family: Arial;");
 
-        forceRating        = new StarRating(1);
-        agiliteRating      = new StarRating(1);
-        intelligenceRating = new StarRating(1);
-        enduranceRating    = new StarRating(1);
+        forceSpinner        = createStatSpinner(1);
+        agiliteSpinner      = createStatSpinner(1);
+        intelligenceSpinner = createStatSpinner(1);
+        enduranceSpinner    = createStatSpinner(1);
 
-        // Les StarRating s'étirent avec leur cellule
-        for (StarRating r : new StarRating[]{forceRating, agiliteRating, intelligenceRating, enduranceRating}) {
-            r.setMaxWidth(Double.MAX_VALUE);
-            GridPane.setHgrow(r, Priority.ALWAYS);
+        for (Spinner<Integer> spinner : new Spinner[]{forceSpinner, agiliteSpinner, intelligenceSpinner, enduranceSpinner}) {
+            spinner.setMaxWidth(Double.MAX_VALUE);
+            GridPane.setHgrow(spinner, Priority.ALWAYS);
         }
 
         GridPane grid = buildGrid();
-        grid.add(buildStatEntry("FORCE",        forceRating),        0, 0);
-        grid.add(buildStatEntry("AGILITÉ",      agiliteRating),      1, 0);
-        grid.add(buildStatEntry("INTELLIGENCE", intelligenceRating), 0, 1);
-        grid.add(buildStatEntry("ENDURANCE",    enduranceRating),    1, 1);
+        grid.add(buildStatEntry("FORCE",        forceSpinner),        0, 0);
+        grid.add(buildStatEntry("AGILITÉ",      agiliteSpinner),      1, 0);
+        grid.add(buildStatEntry("INTELLIGENCE", intelligenceSpinner), 0, 1);
+        grid.add(buildStatEntry("ENDURANCE",    enduranceSpinner),    1, 1);
 
         card.getChildren().addAll(sectionTitle, hint, grid);
         return card;
@@ -453,8 +361,56 @@ public class CreateCharacterView {
         return box;
     }
 
-    /** Bloc stat : label + StarRating dans un encadré, pleine largeur. */
-    private VBox buildStatEntry(String labelText, StarRating rating) {
+    private Spinner<Integer> createStatSpinner(int initial) {
+        Spinner<Integer> spinner = new Spinner<>();
+        configureIntegerSpinner(spinner, 0, Integer.MAX_VALUE, Math.max(0, initial));
+        spinner.getStyleClass().add("spinner");
+        spinner.setMaxWidth(Double.MAX_VALUE);
+        return spinner;
+    }
+
+    private void configureIntegerSpinner(Spinner<Integer> spinner, int min, int max, int initial) {
+        SpinnerValueFactory.IntegerSpinnerValueFactory valueFactory =
+                new SpinnerValueFactory.IntegerSpinnerValueFactory(min, max, initial);
+
+        valueFactory.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(Integer value) {
+                return value == null ? String.valueOf(initial) : value.toString();
+            }
+
+            @Override
+            public Integer fromString(String text) {
+                if (text == null || text.isBlank()) {
+                    return valueFactory.getValue();
+                }
+                if (!text.matches("\\d+")) {
+                    return valueFactory.getValue();
+                }
+                try {
+                    long parsed = Long.parseLong(text);
+                    if (parsed < min) return min;
+                    if (parsed > max) return max;
+                    return (int) parsed;
+                } catch (NumberFormatException ex) {
+                    return valueFactory.getValue();
+                }
+            }
+        });
+
+        spinner.setValueFactory(valueFactory);
+        spinner.setEditable(true);
+        spinner.getEditor().setTextFormatter(new TextFormatter<>(change ->
+                change.getControlNewText().matches("\\d*") ? change : null));
+        spinner.focusedProperty().addListener((obs, oldValue, hasFocus) -> {
+            if (!hasFocus) {
+                spinner.increment(0);
+            }
+        });
+    }
+
+    /** Bloc stat : label + spinner entier dans un encadré, pleine largeur. */
+    private VBox buildStatEntry(String labelText, Spinner<Integer> rating) {
         Label lbl = new Label(labelText);
         lbl.getStyleClass().add("auth-field-label");
         rating.setMaxWidth(Double.MAX_VALUE);
@@ -498,15 +454,10 @@ public class CreateCharacterView {
     public String getBiographie()   { return biographieArea.getText(); }
     public String getCheminPhoto()  { return cheminPhoto; }
 
-    public int getForce()           { return forceRating.getValue(); }
-    public int getAgilite()         { return agiliteRating.getValue(); }
-    public int getIntelligence()    { return intelligenceRating.getValue(); }
-    public int getEndurance()       { return enduranceRating.getValue(); }
-
-    public StarRating getForceRating()        { return forceRating; }
-    public StarRating getAgiliteRating()      { return agiliteRating; }
-    public StarRating getIntelligenceRating() { return intelligenceRating; }
-    public StarRating getEnduranceRating()    { return enduranceRating; }
+    public int getForce()           { return forceSpinner.getValue(); }
+    public int getAgilite()         { return agiliteSpinner.getValue(); }
+    public int getIntelligence()    { return intelligenceSpinner.getValue(); }
+    public int getEndurance()       { return enduranceSpinner.getValue(); }
 
     public TextField getCompetenceNomField()      { return competenceNomField; }
     public TextArea  getCompetenceDescArea()      { return competenceDescArea; }
