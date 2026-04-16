@@ -76,6 +76,19 @@ public class StatsDAO {
         return stats;
     }
 
+    public boolean mettreAJourValeur(int id, int valeur) {
+    String sql = "UPDATE statistiques SET valeur = ? WHERE id = ?";
+    try (Connection conn = ConnectionDb.getConnection();
+         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        pstmt.setInt(1, valeur);
+        pstmt.setInt(2, id);
+        return pstmt.executeUpdate() > 0;
+    } catch (SQLException e) {
+        System.out.println("Erreur mise a jour stat : " + e.getMessage());
+        return false;
+    }
+} 
+
     public boolean mettreAJourPositionEtTaille(int id, int x, int y, double width, double height) {
         String sql = "UPDATE statistiques SET x = ?, y = ?, width = ?, height = ? WHERE id = ?";
 
