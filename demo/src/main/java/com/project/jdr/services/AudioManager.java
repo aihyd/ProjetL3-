@@ -31,6 +31,28 @@ public final class AudioManager {
         }
     }
 
+    public static double getBackgroundVolume() {
+        return backgroundVolume;
+    }
+
+    public static void setBackgroundVolume(double volume) {
+        backgroundVolume = clamp01(volume);
+        if (backgroundPlayer != null) {
+            backgroundPlayer.setVolume(backgroundVolume);
+        }
+    }
+
+    public static double getClickVolume() {
+        return clickVolume;
+    }
+
+    public static void setClickVolume(double volume) {
+        clickVolume = clamp01(volume);
+        if (clickClip != null) {
+            clickClip.setVolume(clickVolume);
+        }
+    }
+
     public static void stopBackground() {
         if (backgroundPlayer != null) {
             backgroundPlayer.stop();
@@ -113,5 +135,15 @@ public final class AudioManager {
         } catch (Exception ex) {
             return null;
         }
+    }
+
+    private static double clamp01(double value) {
+        if (value < 0.0) {
+            return 0.0;
+        }
+        if (value > 1.0) {
+            return 1.0;
+        }
+        return value;
     }
 }

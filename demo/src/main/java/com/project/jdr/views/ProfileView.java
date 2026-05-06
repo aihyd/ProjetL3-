@@ -45,6 +45,7 @@ public class ProfileView {
     private Button afficherFicheButton;
 private Button chatbotButton;
     private final MenuItem changePasswordItem = new MenuItem("Modifier le mot de passe");
+    private final MenuItem audioSettingsItem  = new MenuItem("Audio");
     private final MenuItem deleteAccountItem  = new MenuItem("Supprimer le compte");
     private final MenuItem logoutItem         = new MenuItem("Se déconnecter");
 
@@ -115,13 +116,17 @@ private Button chatbotButton;
         settingsButton.getStyleClass().add("btn-secondary");
 
         changePasswordItem.getStyleClass().add("settings-menu-item");
+        audioSettingsItem.getStyleClass().add("settings-menu-item");
         deleteAccountItem.getStyleClass().add("settings-menu-item-danger");
         logoutItem.getStyleClass().add("settings-menu-item");
 
         ContextMenu settingsMenu = new ContextMenu(
-                changePasswordItem, new SeparatorMenuItem(),
-                deleteAccountItem,  new SeparatorMenuItem(),
-                logoutItem
+            changePasswordItem,
+            audioSettingsItem,
+            new SeparatorMenuItem(),
+            deleteAccountItem,
+            new SeparatorMenuItem(),
+            logoutItem
         );
         settingsMenu.getStyleClass().add("settings-context-menu");
         settingsButton.setOnAction(e ->
@@ -496,6 +501,7 @@ private Button chatbotButton;
     public ListView<Personnage> getPersonnagesListView()  { return personnagesListView; }
     public Button getAjouterEquipementButton()            { return ajouterEquipementButton; }
     public Button getAfficherFicheButton()                { return afficherFicheButton; }
+    public MenuItem getAudioSettingsItem()                { return audioSettingsItem; }
     public MenuItem getChangePasswordItem()               { return changePasswordItem; }
     public MenuItem getDeleteAccountItem()                { return deleteAccountItem; }
     public MenuItem getLogoutItem()                       { return logoutItem; }
