@@ -276,6 +276,35 @@
 }
 
 /* ══════════════════════════════════════════════════════════
+   Audio sliders
+   ══════════════════════════════════════════════════════════ */
+
+.audio-slider .track {
+    -fx-background-color: rgba(255, 255, 255, 0.10);
+    -fx-background-insets: 0;
+    -fx-background-radius: 8;
+    -fx-pref-height: 6px;
+}
+
+.audio-slider .thumb {
+    -fx-background-color: linear-gradient(to bottom, #ffb347, #ff7b00);
+    -fx-background-insets: 0;
+    -fx-background-radius: 10;
+    -fx-pref-width: 16px;
+    -fx-pref-height: 16px;
+    -fx-effect: dropshadow(gaussian, rgba(255, 152, 0, 0.45), 8, 0.3, 0, 2);
+}
+
+.audio-slider:focused .thumb {
+    -fx-background-color: linear-gradient(to bottom, #ffd36a, #ff9800);
+}
+
+.audio-slider .axis {
+    -fx-tick-label-fill: rgba(255, 255, 255, 0.60);
+    -fx-tick-label-font-size: 9px;
+}
+
+/* ══════════════════════════════════════════════════════════
    ProfileView
    ══════════════════════════════════════════════════════════ */
 
