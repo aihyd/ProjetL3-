@@ -13,17 +13,17 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class ChatbotService {
 
     private static final String API_URL = "https://api.groq.com/openai/v1/chat/completions";
-    private static final String MODEL = "llama-3.3-70b-versatile";
+    private static final String MODEL   = "llama-3.3-70b-versatile";
 
     public static String envoyerMessage(String message) {
         try {
-            // 🔐 Récupération sécurisée de la clé API
-            String apiKey = System.getenv("GROQ_API_KEY");
+            // Récupération de la clé API depuis .env ou variable d'environnement
+            String apiKey = System.getProperty("GROQ_API_KEY", System.getenv("GROQ_API_KEY"));
             if (apiKey == null || apiKey.isEmpty()) {
-                return "Erreur : clé API manquante (variable GROQ_API_KEY).";
+                return "Erreur : cle API manquante. Verifie le fichier .env";
             }
 
-            // 🧠 Création du JSON avec Jackson
+            // Construction du JSON
             ObjectMapper mapper = new ObjectMapper();
 
             ObjectNode root = mapper.createObjectNode();
@@ -47,12 +47,11 @@ public class ChatbotService {
 
             messages.add(systemMsg);
             messages.add(userMsg);
-
             root.set("messages", messages);
 
             String requestBody = mapper.writeValueAsString(root);
 
-            // 🌐 Requête HTTP
+            // Envoi de la requête HTTP
             HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(API_URL))
                 .header("Content-Type", "application/json")
@@ -66,7 +65,7 @@ public class ChatbotService {
             String responseBody = response.body();
             System.out.println("Groq Response: " + responseBody);
 
-            // 📦 Parsing JSON propre
+            // Extraction de la réponse
             JsonNode json = mapper.readTree(responseBody);
             JsonNode contentNode = json
                 .path("choices")
@@ -75,7 +74,7 @@ public class ChatbotService {
                 .path("content");
 
             if (contentNode.isMissingNode()) {
-                return "Erreur : réponse inattendue.";
+                return "Erreur : reponse inattendue de l'API.";
             }
 
             return contentNode.asText();
