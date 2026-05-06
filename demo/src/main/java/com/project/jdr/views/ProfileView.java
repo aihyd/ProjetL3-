@@ -354,10 +354,10 @@ private Button chatbotButton;
                     "-fx-font-family: Arial;"
                 );
 
-                Label stars = new Label(buildStars(stat.getValeur()));
-                stars.setStyle("-fx-font-size: 16px; -fx-text-fill: #ffd700;");
+                Label valeur = new Label(String.valueOf(stat.getValeur()));
+                valeur.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #ffd700;");
 
-                statBox.getChildren().addAll(statNom, stars);
+                statBox.getChildren().addAll(statNom, valeur);
                 statsFlow.getChildren().add(statBox);
             }
         } else {
@@ -368,11 +368,6 @@ private Button chatbotButton;
 
         section.getChildren().addAll(statsTitle, statsFlow);
         return section;
-    }
-
-    private String buildStars(int valeur) {
-        int v = Math.max(0, Math.min(5, valeur));
-        return "★".repeat(v) + "☆".repeat(5 - v);
     }
 
     private class DraggablePersonnageCell extends ListCell<Personnage> {

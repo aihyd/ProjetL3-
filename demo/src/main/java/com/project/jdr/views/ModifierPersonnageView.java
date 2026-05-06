@@ -60,71 +60,27 @@ public class ModifierPersonnageView {
     private Label  retourLabel;
 
     // ═════════════════════════════════════════════════════════════════════
-    // StarRating — identique à CreateCharacterView
+    // Sélecteur de valeur entière (1 à infini)
     // ═════════════════════════════════════════════════════════════════════
     public static class StarRating extends HBox {
 
-        private static final int    MAX          = 5;
-        private static final String COLOR_ACTIVE = "#ffd700";
-        private static final String COLOR_HOVER  = "#ffdd55";
-        private static final String COLOR_EMPTY  = "rgba(255,255,255,0.20)";
-
-        private final Label[] stars     = new Label[MAX];
-        private int           value     = 1;
-        private int           hoverIndex = -1;
+        private final Spinner<Integer> spinner;
 
         public StarRating()            { this(1); }
         public StarRating(int initial) {
             super(0);
             setAlignment(Pos.CENTER_LEFT);
-            setSpacing(0);
-            this.value = clamp(initial);
 
-            for (int i = 0; i < MAX; i++) {
-                Label star = new Label("★");
-                star.setPadding(new Insets(2, 5, 2, 5));
-                star.setCursor(javafx.scene.Cursor.HAND);
-                stars[i] = star;
-            }
-            getChildren().addAll(stars);
+            spinner = new Spinner<>(1, Integer.MAX_VALUE, Math.max(1, initial));
+            spinner.setEditable(true);
+            spinner.setPrefWidth(110);
+            spinner.setMaxWidth(110);
 
-            setOnMouseMoved(e -> {
-                int idx = getStarIndexAt(e.getX());
-                if (idx != hoverIndex) { hoverIndex = idx; repaint(); }
-            });
-            setOnMouseExited(e -> { hoverIndex = -1; repaint(); });
-            setOnMouseClicked(e -> {
-                int idx = getStarIndexAt(e.getX());
-                if (idx >= 0) setValue(idx + 1);
-            });
-            repaint();
+            getChildren().add(spinner);
         }
 
-        private int getStarIndexAt(double x) {
-            for (int i = 0; i < MAX; i++) {
-                Label s = stars[i];
-                if (x >= s.getBoundsInParent().getMinX()
-                        && x <= s.getBoundsInParent().getMaxX()) return i;
-            }
-            if (x < stars[0].getBoundsInParent().getMinX()) return 0;
-            if (x > stars[MAX-1].getBoundsInParent().getMaxX()) return MAX - 1;
-            return -1;
-        }
-
-        private void repaint() {
-            int fill = (hoverIndex >= 0) ? hoverIndex + 1 : value;
-            String color = (hoverIndex >= 0) ? COLOR_HOVER : COLOR_ACTIVE;
-            for (int i = 0; i < MAX; i++) {
-                stars[i].setStyle(
-                    "-fx-font-size: 26px;" +
-                    "-fx-text-fill: " + (i < fill ? color : COLOR_EMPTY) + ";"
-                );
-            }
-        }
-
-        public void setValue(int val) { this.value = clamp(val); hoverIndex = -1; repaint(); }
-        public int  getValue()        { return value; }
-        private static int clamp(int v) { return Math.max(1, Math.min(MAX, v)); }
+        public void setValue(int val) { spinner.getValueFactory().setValue(Math.max(1, val)); }
+        public int  getValue()        { return spinner.getValue(); }
     }
 
     // ═════════════════════════════════════════════════════════════════════
@@ -315,7 +271,7 @@ public class ModifierPersonnageView {
     private VBox buildStatsCard(Personnage personnage) {
         VBox card = buildCard("Statistiques");
 
-        Label hint = new Label("Clique sur les etoiles pour modifier la valeur (1 a 5).");
+        Label hint = new Label("Saisis ou ajuste la valeur de chaque statistique (entier >= 1).");
         hint.setStyle(
             "-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.30); -fx-font-family: Arial;"
         );

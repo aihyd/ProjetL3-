@@ -27,10 +27,14 @@ import com.project.jdr.views.RegistrationView;
 import com.project.jdr.dao.PersonnageDAO;
 
 import javafx.application.Application;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class AppTest extends Application {
+
+    private static final double WINDOW_WIDTH  = 1200;
+    private static final double WINDOW_HEIGHT = 780;
 
     private Stage primaryStage;
 
@@ -39,7 +43,17 @@ public class AppTest extends Application {
         chargerEnv();
         InitialisationDb.initialiser();
         this.primaryStage = primaryStage;
+
+        primaryStage.setTitle("JDP");
+        primaryStage.setMinWidth(800);
+        primaryStage.setMinHeight(600);
+
         showLogin();
+
+        primaryStage.setWidth(WINDOW_WIDTH);
+        primaryStage.setHeight(WINDOW_HEIGHT);
+        primaryStage.centerOnScreen();
+        primaryStage.show();
     }
 
     private void chargerEnv() {
@@ -67,13 +81,16 @@ public class AppTest extends Application {
         }
     }
 
+    private void afficher(Parent root) {
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
+        primaryStage.setScene(scene);
+    }
+
     public void showLogin() {
         LoginView loginView = new LoginView();
         new LoginController(loginView, this);
-        Scene scene = new Scene(loginView.getRoot(), 400, 500);
-        scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        afficher(loginView.getRoot());
     }
 
     public void showProfile(int idUtilisateur, String username) {
@@ -87,92 +104,61 @@ public class AppTest extends Application {
         );
 
         new ProfileController(profileView, this, idUtilisateur, username);
-
-        Scene scene = new Scene(profileView.getRoot(), 1100, 720);
-        scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        afficher(profileView.getRoot());
     }
 
     public void showChangePassword(int idUtilisateur, String username) {
         ChangePasswordView view = new ChangePasswordView();
         new ChangePasswordController(view, this, idUtilisateur, username);
-        Scene scene = new Scene(view.getRoot(), 700, 600);
-        scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        afficher(view.getRoot());
     }
 
     public void showAjouterEquipement(Personnage personnage, int idUtilisateur, String username) {
         AddEquipementView view = new AddEquipementView();
         new AddEquipementController(view, this, personnage, idUtilisateur, username);
-        Scene scene = new Scene(view.getRoot(), 700, 600);
-        scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        afficher(view.getRoot());
     }
 
     public void showDeleteAccount(int idUtilisateur, String username) {
         DeleteAccountView view = new DeleteAccountView();
         new DeleteAccountController(view, this, idUtilisateur, username);
-        Scene scene = new Scene(view.getRoot(), 700, 560);
-        scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        afficher(view.getRoot());
     }
 
     public void showModifierPersonnage(Personnage personnage, int idUtilisateur, String username) {
         ModifierPersonnageView view = new ModifierPersonnageView(personnage);
         new ModifierPersonnageController(view, this, personnage, idUtilisateur, username);
-        Scene scene = new Scene(view.getRoot(), 700, 500);
-        scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        afficher(view.getRoot());
     }
 
     public void showFiche(Personnage personnage, int idUtilisateur, String username) {
         FichePersonnageView view = new FichePersonnageView(personnage);
         new FichePersonnageController(view, this, personnage, idUtilisateur, username);
-        Scene scene = new Scene(view.getRoot(), 1100, 700);
-        scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        afficher(view.getRoot());
     }
 
     public void showRegistration() {
         RegistrationView registrationView = new RegistrationView();
         new RegistrationController(registrationView, this);
-        Scene scene = new Scene(registrationView.getRoot(), 400, 500);
-        scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
-        primaryStage.setScene(scene);
+        afficher(registrationView.getRoot());
     }
 
     public void showCreateCharacter(int idUtilisateur, String username) {
         CreateCharacterView view = new CreateCharacterView();
         new CreateCharacterController(view, this, idUtilisateur, username);
-        Scene scene = new Scene(view.getRoot(), 1000, 800);
-        scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        afficher(view.getRoot());
     }
 
     public void showForgotPassword() {
         ForgotPasswordView forgotPasswordView = new ForgotPasswordView();
         new ForgotPasswordController(forgotPasswordView, this);
-        Scene scene = new Scene(forgotPasswordView.getRoot(), 400, 500);
-        scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
-        primaryStage.setScene(scene);
+        afficher(forgotPasswordView.getRoot());
     }
 
     public void showChatbot(int idUtilisateur, String username) {
         ChatbotView view = new ChatbotView();
         new ChatbotController(view, this, idUtilisateur, username);
-        Scene scene = new Scene(view.getRoot(), 900, 650);
-        scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
-        primaryStage.setScene(scene);
-        primaryStage.setMinWidth(500);
-        primaryStage.setMinHeight(500);
-        primaryStage.show();
+        afficher(view.getRoot());
     }
 
     public static void main(String[] args) {

@@ -59,6 +59,16 @@ public class FichePersonnageController {
                 view.supprimerCarteVisuellement(card);
             }
         });
+
+        // ── Edition inline (double-clic sur les éléments) ─────────────────
+        view.setOnEditCompetence(c ->
+                competenceDAO.mettreAJourNomEtDescription(c.getId(), c.getNom(), c.getDescription()));
+        view.setOnEditEquipement(eq ->
+                equipementDAO.mettreAJourNomEtDescription(eq.getId(), eq.getNom(), eq.getDescription()));
+        view.setOnEditStats(s ->
+                statsDAO.mettreAJourValeur(s.getId(), s.getValeur()));
+        view.setOnEditNomPersonnage(newNom ->
+                personnageDAO.mettreAJourPersonnage(personnage));
     }
 
     private void sauvegarder() {
