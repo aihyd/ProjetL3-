@@ -42,17 +42,18 @@ public class CreateCharacterView {
     private ComboBox<String> raceCombo;
     private ComboBox<String> classeCombo;
     private Spinner<Integer> niveauSpinner;
-
+    //chatbot
+    private Button chatbotButton;
     // Biographie
     private TextArea biographieArea;
 
-    // Stats (entiers)
-    private Spinner<Integer> forceSpinner;
-    private Spinner<Integer> agiliteSpinner;
-    private Spinner<Integer> intelligenceSpinner;
-    private Spinner<Integer> enduranceSpinner;
+    // Stats
+    private StarRating forceRating;
+    private StarRating agiliteRating;
+    private StarRating intelligenceRating;
+    private StarRating enduranceRating;
 
-    // Compétences
+    // Competences
     private TextField competenceNomField;
     private TextArea  competenceDescArea;
     private Button    ajouterCompetenceButton;
@@ -65,6 +66,92 @@ public class CreateCharacterView {
     // Message
     private Label messageLabel;
 
+    // StarRating avec boutons simples
+    public static class StarRating extends HBox {
+
+        private static final int    MAX          = 5;
+        private static final String COLOR_ACTIVE = "#ffd700";
+        private static final String COLOR_HOVER  = "#ffdd55";
+        private static final String COLOR_EMPTY  = "rgba(255,255,255,0.20)";
+
+        private final Label[] stars  = new Label[MAX];
+        private int           value  = 1;
+        private int           hoverIndex = -1;
+
+        public StarRating()            { this(1); }
+        public StarRating(int initial) {
+            super(0);
+            setAlignment(Pos.CENTER_LEFT);
+            setSpacing(0);
+            this.value = clamp(initial);
+
+            for (int i = 0; i < MAX; i++) {
+                Label star = new Label("[" + (i + 1) + "]");
+                star.setPadding(new Insets(2, 5, 2, 5));
+                star.setCursor(javafx.scene.Cursor.HAND);
+                star.setMouseTransparent(false);
+                stars[i] = star;
+            }
+
+            getChildren().addAll(stars);
+
+            setOnMouseMoved(e -> {
+                int idx = getStarIndexAt(e.getX());
+                if (idx != hoverIndex) {
+                    hoverIndex = idx;
+                    repaint();
+                }
+            });
+
+            setOnMouseExited(e -> {
+                hoverIndex = -1;
+                repaint();
+            });
+
+            setOnMouseClicked(e -> {
+                int idx = getStarIndexAt(e.getX());
+                if (idx >= 0) setValue(idx + 1);
+            });
+
+            repaint();
+        }
+
+        private int getStarIndexAt(double x) {
+            for (int i = 0; i < MAX; i++) {
+                Label s = stars[i];
+                if (x >= s.getBoundsInParent().getMinX()
+                        && x <= s.getBoundsInParent().getMaxX()) {
+                    return i;
+                }
+            }
+            if (x < stars[0].getBoundsInParent().getMinX()) return 0;
+            if (x > stars[MAX-1].getBoundsInParent().getMaxX()) return MAX - 1;
+            return -1;
+        }
+
+        private void repaint() {
+            int fill = (hoverIndex >= 0) ? hoverIndex + 1 : value;
+            String color = (hoverIndex >= 0) ? COLOR_HOVER : COLOR_ACTIVE;
+            for (int i = 0; i < MAX; i++) {
+                stars[i].setStyle(
+                    "-fx-font-size: 18px; -fx-font-weight: bold;" +
+                    "-fx-font-family: Arial;" +
+                    "-fx-text-fill: " + (i < fill ? color : COLOR_EMPTY) + ";"
+                );
+            }
+        }
+
+        public void setValue(int val) {
+            this.value = clamp(val);
+            hoverIndex = -1;
+            repaint();
+        }
+
+        public int getValue() { return value; }
+
+        private static int clamp(int v) { return Math.max(1, Math.min(MAX, v)); }
+    }
+
     public CreateCharacterView() {
         root = new StackPane();
         root.setAlignment(Pos.TOP_CENTER);
@@ -72,11 +159,9 @@ public class CreateCharacterView {
         VBox contentWrapper = new VBox(16);
         contentWrapper.setAlignment(Pos.TOP_CENTER);
         contentWrapper.setPadding(new Insets(30, 40, 30, 40));
-        // Pas de maxWidth fixe — on laisse le wrapper prendre toute la largeur
-        // et on borne chaque card individuellement
         contentWrapper.setMaxWidth(Double.MAX_VALUE);
 
-        Label pageTitle = new Label("Créer un personnage");
+        Label pageTitle = new Label("Creer un personnage");
         pageTitle.getStyleClass().add("title-label");
         pageTitle.setMaxWidth(Double.MAX_VALUE);
         pageTitle.setAlignment(Pos.CENTER_LEFT);
@@ -110,7 +195,6 @@ public class CreateCharacterView {
         root.setStyle("-fx-background-color: linear-gradient(to bottom right, #12121f, #1e1e2f, #2b2b3c);");
     }
 
-    // ── Carte portrait ────────────────────────────────────────────────────
     private VBox buildPortraitCard() {
         VBox card = buildCard();
 
@@ -122,9 +206,10 @@ public class CreateCharacterView {
         portraitImageView.setFitHeight(120);
         portraitImageView.setPreserveRatio(true);
 
-        Label placeholderLabel = new Label("👤");
+        Label placeholderLabel = new Label("?");
         placeholderLabel.setStyle(
                 "-fx-font-size: 48px;" +
+                "-fx-font-family: Arial;" +
                 "-fx-min-width: 120px; -fx-min-height: 120px;" +
                 "-fx-max-width: 120px; -fx-max-height: 120px;" +
                 "-fx-alignment: center;" +
@@ -141,10 +226,10 @@ public class CreateCharacterView {
         imageContainer.setMaxWidth(120);
         imageContainer.getChildren().add(placeholderLabel);
 
-        photoPathLabel = new Label("Aucune photo sélectionnée");
-        photoPathLabel.setStyle("-fx-text-fill: rgba(255,255,255,0.35); -fx-font-size: 11px;");
+        photoPathLabel = new Label("Aucune photo selectionnee");
+        photoPathLabel.setStyle("-fx-text-fill: rgba(255,255,255,0.35); -fx-font-size: 11px; -fx-font-family: Arial;");
 
-        choisirPhotoButton = new Button("📁  Choisir une photo");
+        choisirPhotoButton = new Button("Choisir une photo");
         choisirPhotoButton.getStyleClass().add("btn-secondary");
         choisirPhotoButton.setOnAction(e -> {
             FileChooser fc = new FileChooser();
@@ -156,20 +241,20 @@ public class CreateCharacterView {
             if (file != null) {
                 cheminPhoto = file.getAbsolutePath();
                 photoPathLabel.setText(file.getName());
-                photoPathLabel.setStyle("-fx-text-fill: #2ecc71; -fx-font-size: 11px;");
+                photoPathLabel.setStyle("-fx-text-fill: #2ecc71; -fx-font-size: 11px; -fx-font-family: Arial;");
                 portraitImageView.setImage(new Image(file.toURI().toString()));
                 imageContainer.getChildren().setAll(portraitImageView);
             }
         });
 
-        Button supprimerPhotoButton = new Button("✕  Supprimer");
+        Button supprimerPhotoButton = new Button("Supprimer");
         supprimerPhotoButton.getStyleClass().add("btn-secondary");
         supprimerPhotoButton.setStyle("-fx-text-fill: #ff6b6b;");
         supprimerPhotoButton.setOnAction(e -> {
             cheminPhoto = null;
             portraitImageView.setImage(null);
-            photoPathLabel.setText("Aucune photo sélectionnée");
-            photoPathLabel.setStyle("-fx-text-fill: rgba(255,255,255,0.35); -fx-font-size: 11px;");
+            photoPathLabel.setText("Aucune photo selectionnee");
+            photoPathLabel.setStyle("-fx-text-fill: rgba(255,255,255,0.35); -fx-font-size: 11px; -fx-font-family: Arial;");
             imageContainer.getChildren().setAll(placeholderLabel);
         });
 
@@ -188,7 +273,6 @@ public class CreateCharacterView {
         return card;
     }
 
-    // ── Carte infos de base ───────────────────────────────────────────────
     private VBox buildBasicInfoCard() {
         VBox card = buildCard();
 
@@ -206,7 +290,7 @@ public class CreateCharacterView {
         raceCombo.setMaxWidth(Double.MAX_VALUE);
 
         classeCombo = new ComboBox<>();
-        classeCombo.getItems().addAll("Guerrier", "Mage", "Rôdeur", "Paladin", "Voleur", "Druide");
+        classeCombo.getItems().addAll("Guerrier", "Mage", "Rodeur", "Paladin", "Voleur", "Druide");
         classeCombo.setPromptText("Choisir une classe");
         classeCombo.setMaxWidth(Double.MAX_VALUE);
 
@@ -230,7 +314,6 @@ public class CreateCharacterView {
         return card;
     }
 
-    // ── Carte biographie ──────────────────────────────────────────────────
     private VBox buildBiographieCard() {
         VBox card = buildCard();
 
@@ -238,24 +321,30 @@ public class CreateCharacterView {
         sectionTitle.getStyleClass().add("profile-card-title");
 
         biographieArea = new TextArea();
-        biographieArea.setPromptText("Décris l'histoire de ton personnage...");
+        biographieArea.setPromptText("Decris l'histoire de ton personnage...");
         biographieArea.setPrefRowCount(4);
         biographieArea.setWrapText(true);
         biographieArea.setMaxWidth(Double.MAX_VALUE);
-        biographieArea.getStyleClass().add("text-area");
+        biographieArea.setStyle(
+            "-fx-text-fill: #000000;" +
+            "-fx-background-color: #ffffff;" +
+            "-fx-background-radius: 10;" +
+            "-fx-border-radius: 10;" +
+            "-fx-font-size: 13px;" +
+            "-fx-font-family: Arial;"
+        );
 
         card.getChildren().addAll(sectionTitle, biographieArea);
         return card;
     }
 
-    // ── Carte stats ───────────────────────────────────────────────────────
     private VBox buildStatsCard() {
         VBox card = buildCard();
 
         Label sectionTitle = new Label("Statistiques");
         sectionTitle.getStyleClass().add("profile-card-title");
 
-        Label hint = new Label("Saisis une valeur entière pour chaque statistique.");
+        Label hint = new Label("Clique sur les cases pour noter chaque statistique de 1 a 5.");
         hint.setStyle("-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.30); -fx-font-family: Arial;");
 
         forceSpinner        = createStatSpinner(1);
@@ -263,39 +352,45 @@ public class CreateCharacterView {
         intelligenceSpinner = createStatSpinner(1);
         enduranceSpinner    = createStatSpinner(1);
 
-        for (Spinner<Integer> spinner : new Spinner[]{forceSpinner, agiliteSpinner, intelligenceSpinner, enduranceSpinner}) {
-            spinner.setMaxWidth(Double.MAX_VALUE);
-            GridPane.setHgrow(spinner, Priority.ALWAYS);
+        for (StarRating r : new StarRating[]{forceRating, agiliteRating, intelligenceRating, enduranceRating}) {
+            r.setMaxWidth(Double.MAX_VALUE);
+            GridPane.setHgrow(r, Priority.ALWAYS);
         }
 
         GridPane grid = buildGrid();
-        grid.add(buildStatEntry("FORCE",        forceSpinner),        0, 0);
-        grid.add(buildStatEntry("AGILITÉ",      agiliteSpinner),      1, 0);
-        grid.add(buildStatEntry("INTELLIGENCE", intelligenceSpinner), 0, 1);
-        grid.add(buildStatEntry("ENDURANCE",    enduranceSpinner),    1, 1);
+        grid.add(buildStatEntry("FORCE",        forceRating),        0, 0);
+        grid.add(buildStatEntry("AGILITE",      agiliteRating),      1, 0);
+        grid.add(buildStatEntry("INTELLIGENCE", intelligenceRating), 0, 1);
+        grid.add(buildStatEntry("ENDURANCE",    enduranceRating),    1, 1);
 
         card.getChildren().addAll(sectionTitle, hint, grid);
         return card;
     }
 
-    // ── Carte compétences ─────────────────────────────────────────────────
     private VBox buildCompetencesCard() {
         VBox card = buildCard();
 
-        Label sectionTitle = new Label("Compétences");
+        Label sectionTitle = new Label("Competences");
         sectionTitle.getStyleClass().add("profile-card-title");
 
         competenceNomField = new TextField();
-        competenceNomField.setPromptText("Nom de la compétence");
+        competenceNomField.setPromptText("Nom de la competence");
         competenceNomField.getStyleClass().add("auth-field");
         competenceNomField.setMaxWidth(Double.MAX_VALUE);
 
         competenceDescArea = new TextArea();
-        competenceDescArea.setPromptText("Description de la compétence...");
+        competenceDescArea.setPromptText("Description de la competence...");
         competenceDescArea.setPrefRowCount(2);
         competenceDescArea.setWrapText(true);
         competenceDescArea.setMaxWidth(Double.MAX_VALUE);
-        competenceDescArea.getStyleClass().add("text-area");
+        competenceDescArea.setStyle(
+            "-fx-text-fill: #000000;" +
+            "-fx-background-color: #ffffff;" +
+            "-fx-background-radius: 10;" +
+            "-fx-border-radius: 10;" +
+            "-fx-font-size: 13px;" +
+            "-fx-font-family: Arial;"
+        );
 
         ajouterCompetenceButton = new Button("+ Ajouter");
         ajouterCompetenceButton.getStyleClass().add("btn-secondary");
@@ -317,7 +412,7 @@ public class CreateCharacterView {
                 "-fx-border-color: rgba(255,255,255,0.07);" +
                 "-fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8;");
 
-        Label emptyLabel = new Label("Aucune compétence ajoutée.");
+        Label emptyLabel = new Label("Aucune competence ajoutee.");
         emptyLabel.getStyleClass().add("profile-empty-label");
         competencesListBox.getChildren().add(emptyLabel);
 
@@ -325,19 +420,15 @@ public class CreateCharacterView {
         return card;
     }
 
-    // ── Helpers layout ────────────────────────────────────────────────────
-
-    /** Card standard : pleine largeur, padding, style. */
     private VBox buildCard() {
         VBox card = new VBox(14);
         card.getStyleClass().add("auth-card");
         card.setPadding(new Insets(20, 24, 20, 24));
-        card.setMaxWidth(Double.MAX_VALUE); // s'étire avec la fenêtre
+        card.setMaxWidth(Double.MAX_VALUE);
         VBox.setVgrow(card, Priority.NEVER);
         return card;
     }
 
-    /** GridPane 2 colonnes 50/50 qui s'étire. */
     private GridPane buildGrid() {
         GridPane grid = new GridPane();
         grid.setHgap(16);
@@ -346,12 +437,11 @@ public class CreateCharacterView {
         ColumnConstraints col = new ColumnConstraints();
         col.setPercentWidth(50);
         col.setHgrow(Priority.ALWAYS);
-        col.setMinWidth(10); // évite le dépassement
+        col.setMinWidth(10);
         grid.getColumnConstraints().addAll(col, col);
         return grid;
     }
 
-    /** Bloc label + contrôle, s'étire horizontalement. */
     private VBox buildFieldNode(String labelText, javafx.scene.Node control) {
         Label lbl = new Label(labelText);
         lbl.getStyleClass().add("auth-field-label");
@@ -361,56 +451,7 @@ public class CreateCharacterView {
         return box;
     }
 
-    private Spinner<Integer> createStatSpinner(int initial) {
-        Spinner<Integer> spinner = new Spinner<>();
-        configureIntegerSpinner(spinner, 0, Integer.MAX_VALUE, Math.max(0, initial));
-        spinner.getStyleClass().add("spinner");
-        spinner.setMaxWidth(Double.MAX_VALUE);
-        return spinner;
-    }
-
-    private void configureIntegerSpinner(Spinner<Integer> spinner, int min, int max, int initial) {
-        SpinnerValueFactory.IntegerSpinnerValueFactory valueFactory =
-                new SpinnerValueFactory.IntegerSpinnerValueFactory(min, max, initial);
-
-        valueFactory.setConverter(new StringConverter<>() {
-            @Override
-            public String toString(Integer value) {
-                return value == null ? String.valueOf(initial) : value.toString();
-            }
-
-            @Override
-            public Integer fromString(String text) {
-                if (text == null || text.isBlank()) {
-                    return valueFactory.getValue();
-                }
-                if (!text.matches("\\d+")) {
-                    return valueFactory.getValue();
-                }
-                try {
-                    long parsed = Long.parseLong(text);
-                    if (parsed < min) return min;
-                    if (parsed > max) return max;
-                    return (int) parsed;
-                } catch (NumberFormatException ex) {
-                    return valueFactory.getValue();
-                }
-            }
-        });
-
-        spinner.setValueFactory(valueFactory);
-        spinner.setEditable(true);
-        spinner.getEditor().setTextFormatter(new TextFormatter<>(change ->
-                change.getControlNewText().matches("\\d*") ? change : null));
-        spinner.focusedProperty().addListener((obs, oldValue, hasFocus) -> {
-            if (!hasFocus) {
-                spinner.increment(0);
-            }
-        });
-    }
-
-    /** Bloc stat : label + spinner entier dans un encadré, pleine largeur. */
-    private VBox buildStatEntry(String labelText, Spinner<Integer> rating) {
+    private VBox buildStatEntry(String labelText, StarRating rating) {
         Label lbl = new Label(labelText);
         lbl.getStyleClass().add("auth-field-label");
         rating.setMaxWidth(Double.MAX_VALUE);
@@ -429,13 +470,12 @@ public class CreateCharacterView {
         return box;
     }
 
-    /** Barre de boutons bas de page. */
     private HBox buildButtons() {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
         cancelButton = new Button("Annuler");
         cancelButton.getStyleClass().add("btn-secondary");
-        createButton = new Button("Créer le personnage");
+        createButton = new Button("Creer le personnage");
         createButton.getStyleClass().add("btn-primary");
         HBox hbox = new HBox(16, spacer, cancelButton, createButton);
         hbox.setAlignment(Pos.CENTER_RIGHT);
@@ -444,7 +484,6 @@ public class CreateCharacterView {
         return hbox;
     }
 
-    // ── API publique ──────────────────────────────────────────────────────
     public Parent getRoot()         { return root; }
 
     public String getNom()          { return nomField.getText(); }

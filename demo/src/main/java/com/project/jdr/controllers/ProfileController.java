@@ -45,6 +45,8 @@ public class ProfileController {
                 view.getAjouterEquipementButton().setOnAction(e ->
                         app.showAjouterEquipement(selectionne, idUtilisateur, username));
             });
+            view.getChatbotButton().setOnAction(e ->
+        app.showChatbot(idUtilisateur, username));
     }
 
     public void rafraichirPersonnages() {
