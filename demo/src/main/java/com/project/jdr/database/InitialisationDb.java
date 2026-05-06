@@ -47,6 +47,16 @@ public class InitialisationDb {
                     FOREIGN KEY (id_personnage) REFERENCES personnages(id)
                 )
             """);
+            stmt.execute("""
+    CREATE TABLE IF NOT EXISTS chat_messages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id_user INTEGER NOT NULL,
+        role TEXT NOT NULL,
+        message TEXT NOT NULL,
+        date_envoi DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (id_user) REFERENCES users(id_user)
+    )
+""");
 
             stmt.execute("""
                 CREATE TABLE IF NOT EXISTS statistiques (

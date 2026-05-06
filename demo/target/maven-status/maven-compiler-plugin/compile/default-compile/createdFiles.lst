@@ -21,6 +21,7 @@ com\project\jdr\controllers\ForgotPasswordController.class
 com\project\jdr\views\ProfileView.class
 com\project\jdr\dao\PortraitDAO.class
 com\project\jdr\views\DeleteAccountView.class
+com\project\jdr\dao\ChatMessageDAO.class
 com\project\jdr\controllers\ModifierPersonnageController.class
 com\project\jdr\dao\FichePersonnageDAO.class
 com\project\jdr\views\FichePersonnageView$CardColor.class

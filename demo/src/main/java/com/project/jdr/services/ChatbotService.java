@@ -15,17 +15,14 @@ public class ChatbotService {
     private static final String API_URL = "https://api.groq.com/openai/v1/chat/completions";
     private static final String MODEL   = "llama-3.3-70b-versatile";
 
-    public static String envoyerMessage(String message) {
+    public static String envoyerMessage(String message, String contexte) {
         try {
-            // Récupération de la clé API depuis .env ou variable d'environnement
             String apiKey = System.getProperty("GROQ_API_KEY", System.getenv("GROQ_API_KEY"));
             if (apiKey == null || apiKey.isEmpty()) {
                 return "Erreur : cle API manquante. Verifie le fichier .env";
             }
 
-            // Construction du JSON
             ObjectMapper mapper = new ObjectMapper();
-
             ObjectNode root = mapper.createObjectNode();
             root.put("model", MODEL);
             root.put("max_tokens", 1024);
@@ -38,7 +35,9 @@ public class ChatbotService {
                 "Tu es un assistant expert en jeux de role (JDR). " +
                 "Tu aides les joueurs a creer des personnages, inventer des histoires, " +
                 "des competences, des equipements et des aventures. " +
-                "Reponds toujours en francais de maniere creative et immersive."
+                "Reponds toujours en francais de maniere creative et immersive.\n\n" +
+                "Voici le contexte de l'utilisateur avec qui tu parles :\n" +
+                contexte
             );
 
             ObjectNode userMsg = mapper.createObjectNode();
@@ -51,7 +50,6 @@ public class ChatbotService {
 
             String requestBody = mapper.writeValueAsString(root);
 
-            // Envoi de la requête HTTP
             HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(API_URL))
                 .header("Content-Type", "application/json")
@@ -62,11 +60,9 @@ public class ChatbotService {
             HttpResponse<String> response = HttpClient.newHttpClient()
                 .send(request, HttpResponse.BodyHandlers.ofString());
 
-            String responseBody = response.body();
-            System.out.println("Groq Response: " + responseBody);
+            System.out.println("Groq Response: " + response.body());
 
-            // Extraction de la réponse
-            JsonNode json = mapper.readTree(responseBody);
+            JsonNode json = mapper.readTree(response.body());
             JsonNode contentNode = json
                 .path("choices")
                 .path(0)
@@ -74,7 +70,7 @@ public class ChatbotService {
                 .path("content");
 
             if (contentNode.isMissingNode()) {
-                return "Erreur : reponse inattendue de l'API.";
+                return "Erreur : reponse inattendue.";
             }
 
             return contentNode.asText();
