@@ -81,6 +81,7 @@ public class ProfileController {
                 bgValue.getStyleClass().add("profile-field-value");
 
                 Slider bgSlider = new Slider(0, 100, AudioManager.getBackgroundVolume() * 100.0);
+                bgSlider.getStyleClass().add("audio-slider");
                 bgSlider.setPrefWidth(240);
                 bgSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
                         AudioManager.setBackgroundVolume(newVal.doubleValue() / 100.0);
@@ -94,6 +95,7 @@ public class ProfileController {
                 clickValue.getStyleClass().add("profile-field-value");
 
                 Slider clickSlider = new Slider(0, 100, AudioManager.getClickVolume() * 100.0);
+                clickSlider.getStyleClass().add("audio-slider");
                 clickSlider.setPrefWidth(240);
                 clickSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
                         AudioManager.setClickVolume(newVal.doubleValue() / 100.0);
