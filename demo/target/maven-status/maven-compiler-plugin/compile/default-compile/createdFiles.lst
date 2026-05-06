@@ -2,6 +2,7 @@ com\project\jdr\controllers\ChangePasswordController.class
 com\project\jdr\views\AddEquipementView$2.class
 com\project\jdr\dao\CompetenceDAO.class
 com\project\jdr\model\Stats.class
+com\project\jdr\services\AudioManager.class
 com\project\jdr\controllers\AddEquipementController.class
 com\project\jdr\database\InitialisationDb.class
 com\project\jdr\views\ModifierPersonnageView$EquipementRow.class
