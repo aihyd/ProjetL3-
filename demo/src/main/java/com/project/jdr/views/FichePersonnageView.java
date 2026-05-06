@@ -356,7 +356,7 @@ public class FichePersonnageView {
 
             content.widthProperty().addListener((obs, o, n) -> {
                 double w = n.doubleValue();
-                double valueSize = clamp(12 + (w - 140) / 260.0 * 10, 12, 22);
+                double starSize = clamp(12 + (w - 140) / 260.0 * 10, 12, 22);
                 double nomSize  = clamp(8  + (w - 140) / 260.0 * 4,  8,  12);
                 stars.setStyle(String.format(
                     "-fx-font-size: %.0fpx; -fx-text-fill: #ffd700; -fx-font-family: Arial;", starSize));
@@ -366,7 +366,7 @@ public class FichePersonnageView {
                     "-fx-font-family: Arial; -fx-min-width: 70px;", nomSize));
             });
 
-            row.getChildren().addAll(nom, spacer, valeur);
+            row.getChildren().addAll(nom, spacer, stars);
 
             Region rowSep = new Region();
             rowSep.setPrefHeight(1);

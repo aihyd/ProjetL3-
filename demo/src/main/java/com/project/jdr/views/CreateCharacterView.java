@@ -10,10 +10,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
@@ -25,7 +23,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 
 public class CreateCharacterView {
 
@@ -294,8 +291,8 @@ public class CreateCharacterView {
         classeCombo.setPromptText("Choisir une classe");
         classeCombo.setMaxWidth(Double.MAX_VALUE);
 
-        niveauSpinner = new Spinner<>();
-        configureIntegerSpinner(niveauSpinner, 1, 20, 1);
+        niveauSpinner = new Spinner<>(1, 20, 1);
+        niveauSpinner.setEditable(true);
         niveauSpinner.setMaxWidth(Double.MAX_VALUE);
         niveauSpinner.getStyleClass().add("spinner");
 
@@ -347,10 +344,10 @@ public class CreateCharacterView {
         Label hint = new Label("Clique sur les cases pour noter chaque statistique de 1 a 5.");
         hint.setStyle("-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.30); -fx-font-family: Arial;");
 
-        forceSpinner        = createStatSpinner(1);
-        agiliteSpinner      = createStatSpinner(1);
-        intelligenceSpinner = createStatSpinner(1);
-        enduranceSpinner    = createStatSpinner(1);
+        forceRating        = new StarRating(1);
+        agiliteRating      = new StarRating(1);
+        intelligenceRating = new StarRating(1);
+        enduranceRating    = new StarRating(1);
 
         for (StarRating r : new StarRating[]{forceRating, agiliteRating, intelligenceRating, enduranceRating}) {
             r.setMaxWidth(Double.MAX_VALUE);
@@ -493,10 +490,15 @@ public class CreateCharacterView {
     public String getBiographie()   { return biographieArea.getText(); }
     public String getCheminPhoto()  { return cheminPhoto; }
 
-    public int getForce()           { return forceSpinner.getValue(); }
-    public int getAgilite()         { return agiliteSpinner.getValue(); }
-    public int getIntelligence()    { return intelligenceSpinner.getValue(); }
-    public int getEndurance()       { return enduranceSpinner.getValue(); }
+    public int getForce()           { return forceRating.getValue(); }
+    public int getAgilite()         { return agiliteRating.getValue(); }
+    public int getIntelligence()    { return intelligenceRating.getValue(); }
+    public int getEndurance()       { return enduranceRating.getValue(); }
+
+    public StarRating getForceRating()        { return forceRating; }
+    public StarRating getAgiliteRating()      { return agiliteRating; }
+    public StarRating getIntelligenceRating() { return intelligenceRating; }
+    public StarRating getEnduranceRating()    { return enduranceRating; }
 
     public TextField getCompetenceNomField()      { return competenceNomField; }
     public TextArea  getCompetenceDescArea()      { return competenceDescArea; }
