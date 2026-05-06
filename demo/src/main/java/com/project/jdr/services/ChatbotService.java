@@ -25,7 +25,7 @@ public class ChatbotService {
             ObjectMapper mapper = new ObjectMapper();
             ObjectNode root = mapper.createObjectNode();
             root.put("model", MODEL);
-            root.put("max_tokens", 1024);
+            root.put("max_tokens", 2048);
 
             ArrayNode messages = mapper.createArrayNode();
 
@@ -33,11 +33,34 @@ public class ChatbotService {
             systemMsg.put("role", "system");
             systemMsg.put("content",
                 "Tu es un assistant expert en jeux de role (JDR). " +
-                "Tu aides les joueurs a creer des personnages, inventer des histoires, " +
-                "des competences, des equipements et des aventures. " +
-                "Reponds toujours en francais de maniere creative et immersive.\n\n" +
-                "Voici le contexte de l'utilisateur avec qui tu parles :\n" +
-                contexte
+                "Tu es creatif, immersif et tres utile. " +
+                "Reponds toujours en francais.\n\n" +
+
+                "IMPORTANT : Quand l'utilisateur te demande de creer un personnage, " +
+                "tu DOIS obligatoirement repondre en utilisant EXACTEMENT ce format, " +
+                "sans aucune modification :\n\n" +
+
+                "PERSONNAGE:\n" +
+                "Nom: [nom du personnage]\n" +
+                "Race: [Humain ou Elfe ou Nain ou Orc ou Halfelin]\n" +
+                "Classe: [Guerrier ou Mage ou Rodeur ou Paladin ou Voleur ou Druide]\n" +
+                "Niveau: [nombre entre 1 et 20]\n" +
+                "Biographie: [histoire du personnage en 2-3 phrases]\n" +
+                "Force: [nombre entre 1 et 5]\n" +
+                "Agilite: [nombre entre 1 et 5]\n" +
+                "Intelligence: [nombre entre 1 et 5]\n" +
+                "Endurance: [nombre entre 1 et 5]\n" +
+                "Competence1: [nom de la competence] | [description courte]\n" +
+                "Competence2: [nom de la competence] | [description courte]\n" +
+                "Competence3: [nom de la competence] | [description courte]\n" +
+                "Equipement1: [nom de l'equipement] | [description courte]\n" +
+                "Equipement2: [nom de l'equipement] | [description courte]\n\n" +
+
+                "Apres ce bloc PERSONNAGE, ajoute une description creative du personnage.\n\n" +
+
+                "Pour toute autre question, reponds normalement de facon creative.\n\n" +
+
+                "Contexte de l'utilisateur :\n" + contexte
             );
 
             ObjectNode userMsg = mapper.createObjectNode();

@@ -14,15 +14,12 @@ import java.util.List;
 
 public class PersonnageDAO {
 
-<<<<<<< Updated upstream
-    private final FichePersonnageDAO ficheDAO       = new FichePersonnageDAO();
-    private final StatsDAO           statsDAO       = new StatsDAO();
-    private final PortraitDAO        portraitDAO    = new PortraitDAO();
-    private final CompetenceDAO      competenceDAO  = new CompetenceDAO();
-    private final EquipementDAO      equipementDAO  = new EquipementDAO();
+    private final FichePersonnageDAO ficheDAO      = new FichePersonnageDAO();
+    private final StatsDAO           statsDAO      = new StatsDAO();
+    private final PortraitDAO        portraitDAO   = new PortraitDAO();
+    private final CompetenceDAO      competenceDAO = new CompetenceDAO();
+    private final EquipementDAO      equipementDAO = new EquipementDAO();
 
-=======
->>>>>>> Stashed changes
     public int ajouterPersonnage(Personnage personnage, int idUtilisateur) {
         String sql = """
                 INSERT INTO personnages(nom, race, classe, niveau, id_user)
@@ -30,26 +27,11 @@ public class PersonnageDAO {
                 """;
         try (Connection conn = ConnectionDb.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-<<<<<<< Updated upstream
             pstmt.setString(1, personnage.getNom());
             pstmt.setString(2, personnage.getRace());
             pstmt.setString(3, personnage.getClasse());
             pstmt.setInt(4, personnage.getNiveau());
             pstmt.setInt(5, idUtilisateur);
-=======
-
-            // 2. Insérer la fiche personnage
-            int idFiche = -1;
-            String sqlFiche = "INSERT INTO fiches_personnages (biographie, id_personnage) VALUES (?, ?)";
-            try (PreparedStatement stmt = conn.prepareStatement(sqlFiche, Statement.RETURN_GENERATED_KEYS)) {
-                stmt.setString(1, biographie);
-                stmt.setInt(2, idPersonnage);
-                stmt.executeUpdate();
-                ResultSet rs = stmt.getGeneratedKeys();
-                if (rs.next()) idFiche = rs.getInt(1);
-            }
-
->>>>>>> Stashed changes
             int lignes = pstmt.executeUpdate();
             if (lignes > 0) {
                 try (ResultSet rs = pstmt.getGeneratedKeys()) {
@@ -104,7 +86,7 @@ public class PersonnageDAO {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Erreur récupération personnages : " + e.getMessage());
+            System.out.println("Erreur recuperation personnages : " + e.getMessage());
         }
         return personnages;
     }
@@ -119,7 +101,7 @@ public class PersonnageDAO {
                 while (rs.next()) noms.add(rs.getString("nom"));
             }
         } catch (SQLException e) {
-            System.out.println("Erreur récupération noms personnages : " + e.getMessage());
+            System.out.println("Erreur recuperation noms personnages : " + e.getMessage());
         }
         return noms;
     }
@@ -186,7 +168,7 @@ public class PersonnageDAO {
             pstmt.setInt(5, personnage.getId());
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.out.println("Erreur mise à jour personnage : " + e.getMessage());
+            System.out.println("Erreur mise a jour personnage : " + e.getMessage());
             return false;
         }
     }
