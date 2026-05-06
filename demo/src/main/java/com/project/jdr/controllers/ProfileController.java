@@ -15,6 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -59,8 +60,8 @@ public class ProfileController {
                 view.getAjouterEquipementButton().setOnAction(e ->
                         app.showAjouterEquipement(selectionne, idUtilisateur, username));
             });
-            view.getChatbotButton().setOnAction(e ->
-        app.showChatbot(idUtilisateur, username));
+                view.getChatbotButton().setOnAction(e ->
+                                app.showChatbot(idUtilisateur, username));
     }
 
         private void showAudioSettingsDialog() {
@@ -71,13 +72,16 @@ public class ProfileController {
                         stage.initOwner(view.getRoot().getScene().getWindow());
                 }
 
-                Label title = new Label("Volume audio");
-                title.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+                Label title = new Label("Parametres audio");
+                title.getStyleClass().add("title-label");
 
                 Label bgLabel = new Label("Fond");
+                bgLabel.getStyleClass().add("auth-field-label");
                 Label bgValue = new Label();
+                bgValue.getStyleClass().add("profile-field-value");
+
                 Slider bgSlider = new Slider(0, 100, AudioManager.getBackgroundVolume() * 100.0);
-                bgSlider.setPrefWidth(220);
+                bgSlider.setPrefWidth(240);
                 bgSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
                         AudioManager.setBackgroundVolume(newVal.doubleValue() / 100.0);
                         bgValue.setText(String.format("%d%%", newVal.intValue()));
@@ -85,9 +89,12 @@ public class ProfileController {
                 bgValue.setText(String.format("%d%%", (int) bgSlider.getValue()));
 
                 Label clickLabel = new Label("Clic");
+                clickLabel.getStyleClass().add("auth-field-label");
                 Label clickValue = new Label();
+                clickValue.getStyleClass().add("profile-field-value");
+
                 Slider clickSlider = new Slider(0, 100, AudioManager.getClickVolume() * 100.0);
-                clickSlider.setPrefWidth(220);
+                clickSlider.setPrefWidth(240);
                 clickSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
                         AudioManager.setClickVolume(newVal.doubleValue() / 100.0);
                         clickValue.setText(String.format("%d%%", newVal.intValue()));
@@ -100,15 +107,23 @@ public class ProfileController {
                 clickRow.setAlignment(Pos.CENTER_LEFT);
 
                 Button closeButton = new Button("Fermer");
+                closeButton.getStyleClass().add("btn-secondary");
                 closeButton.setOnAction(e -> stage.close());
 
                 HBox actions = new HBox(closeButton);
                 actions.setAlignment(Pos.CENTER_RIGHT);
 
-                VBox root = new VBox(14, title, bgRow, clickRow, actions);
-                root.setPadding(new Insets(16));
+                VBox card = new VBox(14, title, bgRow, clickRow, actions);
+                card.getStyleClass().add("auth-card");
+                card.setPadding(new Insets(18, 22, 18, 22));
+                card.setMaxWidth(Double.MAX_VALUE);
 
-                Scene scene = new Scene(root, 360, 200);
+                StackPane root = new StackPane(card);
+                root.getStyleClass().add("auth-root");
+                root.setPadding(new Insets(24));
+
+                Scene scene = new Scene(root, 520, 280);
+                scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
                 AudioManager.applyToScene(scene);
                 stage.setScene(scene);
                 stage.showAndWait();
