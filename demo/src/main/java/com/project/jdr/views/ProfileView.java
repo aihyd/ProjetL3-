@@ -43,7 +43,7 @@ public class ProfileView {
     private VBox   resumePane;
     private Button ajouterEquipementButton;
     private Button afficherFicheButton;
-
+private Button chatbotButton;
     private final MenuItem changePasswordItem = new MenuItem("Modifier le mot de passe");
     private final MenuItem deleteAccountItem  = new MenuItem("Supprimer le compte");
     private final MenuItem logoutItem         = new MenuItem("Se déconnecter");
@@ -164,8 +164,11 @@ public class ProfileView {
 
         createCharacterButton = new Button("+ Créer un personnage");
         createCharacterButton.getStyleClass().add("btn-primary");
+        chatbotButton = new Button("Assistant JDR");
+         chatbotButton.getStyleClass().add("btn-secondary");
 
-        header.getChildren().addAll(textBlock, spacer, createCharacterButton);
+
+        header.getChildren().addAll(textBlock, spacer,chatbotButton ,createCharacterButton);
 
         Region sep = new Region();
         sep.getStyleClass().add("auth-divider");
@@ -496,4 +499,5 @@ public class ProfileView {
     public MenuItem getChangePasswordItem()               { return changePasswordItem; }
     public MenuItem getDeleteAccountItem()                { return deleteAccountItem; }
     public MenuItem getLogoutItem()                       { return logoutItem; }
+    public Button getChatbotButton() { return chatbotButton; }
 }

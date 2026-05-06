@@ -48,13 +48,12 @@ public class FichePersonnageView {
     private final Button modifierButton;
     private final Button supprimerButton;
 
-    // Corbeille — affichée en bas à droite du canvas
-    private final Label corbeilleLabel = new Label("🗑");
+    // ── Corbeille — texte simple à la place de l'emoji ────────────────────
+    private final Label corbeilleLabel = new Label("SUPPR");
     private boolean corbeilleActive    = false;
 
     private final List<FicheCard>     cards    = new ArrayList<>();
     private Runnable                  onSupprimerConfirme;
-    // Appelé quand une carte est droppée sur la corbeille : reçoit la FicheCard
     private Consumer<FicheCard>       onSupprimerCarte;
 
     public FichePersonnageView(Personnage personnage) {
@@ -119,7 +118,6 @@ public class FichePersonnageView {
             "-fx-border-width: 1;"
         );
 
-        // ── Canvas ────────────────────────────────────────────────────────
         canvas = new Pane();
         canvas.setPrefSize(1200, 800);
         canvas.setStyle(
@@ -130,20 +128,17 @@ public class FichePersonnageView {
             "-fx-background-radius: 12;"
         );
 
-        // ── Corbeille fixée en bas à droite du canvas ─────────────────────
         corbeilleLabel.setStyle(corbeilleStyle(false));
         corbeilleLabel.setVisible(false);
         corbeilleLabel.setManaged(false);
 
-        // Position dans le Pane — on la repositionne quand le canvas change de taille
         canvas.widthProperty().addListener((obs, o, n) ->
-                corbeilleLabel.setLayoutX(n.doubleValue() - 70));
+                corbeilleLabel.setLayoutX(n.doubleValue() - 80));
         canvas.heightProperty().addListener((obs, o, n) ->
-                corbeilleLabel.setLayoutY(n.doubleValue() - 70));
-        corbeilleLabel.setLayoutX(1130);
-        corbeilleLabel.setLayoutY(730);
+                corbeilleLabel.setLayoutY(n.doubleValue() - 60));
+        corbeilleLabel.setLayoutX(1120);
+        corbeilleLabel.setLayoutY(740);
 
-        // Accepte le drop des cartes compétence/équipement
         corbeilleLabel.setOnDragOver(e -> {
             if (e.getDragboard().hasString()) {
                 e.acceptTransferModes(TransferMode.MOVE);
@@ -164,7 +159,6 @@ public class FichePersonnageView {
                     .findFirst().orElse(null);
 
             if (target != null && onSupprimerCarte != null) {
-                // Confirmation
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Supprimer l'element");
                 alert.setHeaderText("Supprimer cet element ?");
@@ -219,19 +213,20 @@ public class FichePersonnageView {
 
     private String corbeilleStyle(boolean survol) {
         return survol
-            ? "-fx-font-size: 32px; -fx-cursor: hand;" +
+            ? "-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand;" +
               "-fx-background-color: rgba(231,76,60,0.30);" +
               "-fx-border-color: rgba(231,76,60,0.70);" +
-              "-fx-border-width: 1; -fx-border-radius: 50; -fx-background-radius: 50;" +
+              "-fx-border-width: 1; -fx-border-radius: 8; -fx-background-radius: 8;" +
+              "-fx-text-fill: #ffffff; -fx-font-family: Arial;" +
               "-fx-padding: 10;"
-            : "-fx-font-size: 28px; -fx-cursor: hand;" +
+            : "-fx-font-size: 12px; -fx-font-weight: bold; -fx-cursor: hand;" +
               "-fx-background-color: rgba(231,76,60,0.10);" +
               "-fx-border-color: rgba(231,76,60,0.35);" +
-              "-fx-border-width: 1; -fx-border-radius: 50; -fx-background-radius: 50;" +
+              "-fx-border-width: 1; -fx-border-radius: 8; -fx-background-radius: 8;" +
+              "-fx-text-fill: #ff6b6b; -fx-font-family: Arial;" +
               "-fx-padding: 10;";
     }
 
-    // ── Affiche/cache la corbeille selon qu'un drag est en cours ──────────
     public void afficherCorbeille(boolean visible) {
         corbeilleLabel.setVisible(visible);
         corbeilleLabel.setManaged(visible);
@@ -285,7 +280,6 @@ public class FichePersonnageView {
         card.setPrefHeight(Math.max(MIN_H, h));
     }
 
-    // ── Portrait ──────────────────────────────────────────────────────────
     private FicheCard buildPortraitCard(Portrait portrait, Personnage personnage) {
         VBox content = new VBox(8);
         content.setAlignment(Pos.CENTER);
@@ -334,7 +328,6 @@ public class FichePersonnageView {
         return new FicheCard("Portrait", content, portrait.getId(), "portrait", CardColor.GOLD);
     }
 
-    // ── Stats ─────────────────────────────────────────────────────────────
     private FicheCard buildStatsCard(List<Stats> statsList) {
         VBox content = new VBox(0);
         content.setMaxWidth(Double.MAX_VALUE);
@@ -357,15 +350,16 @@ public class FichePersonnageView {
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.ALWAYS);
 
+            // ── Étoiles remplacées par des barres ─────────────────────────
             Label stars = new Label(buildStars(stat.getValeur()));
-            stars.setStyle("-fx-font-size: 16px; -fx-text-fill: #ffd700;");
+            stars.setStyle("-fx-font-size: 14px; -fx-text-fill: #ffd700; -fx-font-family: Arial;");
 
             content.widthProperty().addListener((obs, o, n) -> {
                 double w = n.doubleValue();
                 double starSize = clamp(12 + (w - 140) / 260.0 * 10, 12, 22);
                 double nomSize  = clamp(8  + (w - 140) / 260.0 * 4,  8,  12);
                 stars.setStyle(String.format(
-                    "-fx-font-size: %.0fpx; -fx-text-fill: #ffd700;", starSize));
+                    "-fx-font-size: %.0fpx; -fx-text-fill: #ffd700; -fx-font-family: Arial;", starSize));
                 nom.setStyle(String.format(
                     "-fx-font-size: %.0fpx; -fx-font-weight: bold;" +
                     "-fx-text-fill: rgba(255,215,0,0.50);" +
@@ -385,7 +379,6 @@ public class FichePersonnageView {
         return new FicheCard("Statistiques", content, -1, "stats", CardColor.GOLD);
     }
 
-    // ── Competence ────────────────────────────────────────────────────────
     private FicheCard buildCompetenceCard(Competence c) {
         VBox content = new VBox(6);
         content.setMaxWidth(Double.MAX_VALUE);
@@ -398,7 +391,6 @@ public class FichePersonnageView {
         descLabel.setWrapText(true);
         descLabel.maxWidthProperty().bind(content.widthProperty());
 
-        // Tailles responsives selon largeur
         content.widthProperty().addListener((obs, o, n) -> {
             double w = n.doubleValue();
             double nomSize  = clamp(11 + (w - 140) / 260.0 * 4, 11, 16);
@@ -411,7 +403,6 @@ public class FichePersonnageView {
                 "-fx-text-fill: rgba(255,255,255,0.45); -fx-font-family: Arial;", descSize));
         });
 
-        // Style initial
         nomLabel.setStyle(
             "-fx-font-size: 13px; -fx-font-weight: bold;" +
             "-fx-text-fill: rgba(255,255,255,0.90); -fx-font-family: Arial;"
@@ -425,7 +416,6 @@ public class FichePersonnageView {
         return new FicheCard("Competence", content, c.getId(), "competence", CardColor.PURPLE);
     }
 
-    // ── Equipement ────────────────────────────────────────────────────────
     private FicheCard buildEquipementCard(Equipement e) {
         VBox content = new VBox(6);
         content.setMaxWidth(Double.MAX_VALUE);
@@ -438,7 +428,6 @@ public class FichePersonnageView {
         descLabel.setWrapText(true);
         descLabel.maxWidthProperty().bind(content.widthProperty());
 
-        // Tailles responsives selon largeur
         content.widthProperty().addListener((obs, o, n) -> {
             double w = n.doubleValue();
             double nomSize  = clamp(11 + (w - 140) / 260.0 * 4, 11, 16);
@@ -451,7 +440,6 @@ public class FichePersonnageView {
                 "-fx-text-fill: rgba(255,255,255,0.45); -fx-font-family: Arial;", descSize));
         });
 
-        // Style initial
         nomLabel.setStyle(
             "-fx-font-size: 13px; -fx-font-weight: bold;" +
             "-fx-text-fill: rgba(255,255,255,0.90); -fx-font-family: Arial;"
@@ -465,16 +453,21 @@ public class FichePersonnageView {
         return new FicheCard("Equipement", content, e.getId(), "equipement", CardColor.ORANGE);
     }
 
+    // ── Étoiles remplacées par des [ ] et [X] ─────────────────────────────
     private String buildStars(int v) {
         v = Math.max(0, Math.min(5, v));
-        return "★".repeat(v) + "☆".repeat(5 - v);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 1; i <= 5; i++) {
+            sb.append(i <= v ? "[X]" : "[ ]");
+            if (i < 5) sb.append(" ");
+        }
+        return sb.toString();
     }
 
     private double clamp(double val, double min, double max) {
         return Math.max(min, Math.min(max, val));
     }
 
-    // ── API ───────────────────────────────────────────────────────────────
     public Parent          getRoot()               { return root; }
     public Button          getSauvegarderButton()  { return sauvegarderButton; }
     public Button          getRetourButton()       { return retourButton; }
@@ -487,7 +480,6 @@ public class FichePersonnageView {
 
     public enum CardColor { GOLD, PURPLE, ORANGE }
 
-    // ═════════════════════════════════════════════════════════════════════
     public class FicheCard extends VBox {
 
         private final int       entityId;
@@ -515,8 +507,8 @@ public class FichePersonnageView {
             accentLine.setMaxWidth(Double.MAX_VALUE);
             accentLine.setStyle("-fx-background-color: " + accentColor() + ";");
 
-            Label dot = new Label("●");
-            dot.setStyle("-fx-font-size: 7px; -fx-text-fill: " + accentColor() + ";");
+            Label dot = new Label(">");
+            dot.setStyle("-fx-font-size: 9px; -fx-text-fill: " + accentColor() + "; -fx-font-family: Arial;");
 
             Label header = new Label(titleText.toUpperCase());
             header.setStyle(
@@ -524,13 +516,13 @@ public class FichePersonnageView {
                 "-fx-text-fill: rgba(255,255,255,0.35); -fx-cursor: move;"
             );
 
-            // Hint Ctrl+drag pour corbeille (compétence/équipement seulement)
             Region headerSpacer = new Region();
             HBox.setHgrow(headerSpacer, Priority.ALWAYS);
 
             HBox headerRow;
             if ("competence".equals(type) || "equipement".equals(type)) {
-                Label ctrlHint = new Label("Ctrl+drag → 🗑");
+                // ── Hint sans emoji ────────────────────────────────────────
+                Label ctrlHint = new Label("Ctrl+drag pour supprimer");
                 ctrlHint.setStyle(
                     "-fx-font-size: 8px;" +
                     "-fx-text-fill: rgba(255,255,255,0.18);" +
@@ -562,7 +554,6 @@ public class FichePersonnageView {
 
             getChildren().addAll(accentLine, headerRow, sep, content, resizeHandle);
 
-            // ── Drag vers la corbeille : uniquement avec Ctrl enfoncé ──────
             if ("competence".equals(type) || "equipement".equals(type)) {
                 setOnDragDetected(e -> {
                     if (!e.isControlDown()) return;
@@ -580,7 +571,6 @@ public class FichePersonnageView {
                 });
             }
 
-            // ── Move / resize ─────────────────────────────────────────────
             addEventFilter(MouseEvent.MOUSE_MOVED, e -> {
                 ResizeEdge detected = detectEdge(e.getX(), e.getY());
                 setCursor(detected == ResizeEdge.NONE ? Cursor.DEFAULT : cursorFor(detected));

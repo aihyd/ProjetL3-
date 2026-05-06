@@ -30,14 +30,6 @@ public class ProfileController {
         view.getDeleteAccountItem().setOnAction(e ->
                 app.showDeleteAccount(idUtilisateur, username));
 
-<<<<<<< HEAD
-        view.getCreateCharacterButton().setOnAction(e -> {
-            System.out.println("Créer un personnage");
-        });
-        view.getCreateCharacterButton().setOnAction(e -> {
-    app.showCreateCharacter(idUtilisateur, username);
-});
-=======
         view.getCreateCharacterButton().setOnAction(e ->
                 app.showCreateCharacter(idUtilisateur, username));
 
@@ -53,6 +45,8 @@ public class ProfileController {
                 view.getAjouterEquipementButton().setOnAction(e ->
                         app.showAjouterEquipement(selectionne, idUtilisateur, username));
             });
+            view.getChatbotButton().setOnAction(e ->
+        app.showChatbot(idUtilisateur, username));
     }
 
     public void rafraichirPersonnages() {
@@ -61,6 +55,5 @@ public class ProfileController {
         view.getPersonnagesListView()
             .getItems()
             .setAll(personnages);
->>>>>>> b499372c8c1cc55af69895b48cf9b05636a55e65
     }
 }

@@ -1,60 +1,6 @@
 package com.project.jdr.controllers;
 
 import com.project.jdr.AppTest;
-<<<<<<< HEAD
-import com.project.jdr.database.PersonnageDAO;
-import com.project.jdr.views.CreateCharacterView;
-
-public class CreateCharacterController {
-
-    public CreateCharacterController(CreateCharacterView view, AppTest app,
-                                      int idUtilisateur, String username) {
-
-        // Annuler → retour au profil
-        view.getCancelButton().setOnAction(e -> {
-            app.showProfile(idUtilisateur, username);
-        });
-
-        // Créer le personnage
-        view.getCreateButton().setOnAction(e -> {
-            String nom         = view.getNom();
-            String race        = view.getRace();
-            String classe      = view.getClasse();
-            int niveau         = view.getNiveau();
-            String biographie  = view.getBiographie();
-            int force          = view.getForce();
-            int agilite        = view.getAgilite();
-            int intelligence   = view.getIntelligence();
-            int endurance      = view.getEndurance();
-
-            // Vérifications
-            if (nom == null || nom.trim().isEmpty()) {
-                view.getMessageLabel().setText("Le nom est obligatoire !");
-                return;
-            }
-            if (race == null) {
-                view.getMessageLabel().setText("Choisis une race !");
-                return;
-            }
-            if (classe == null) {
-                view.getMessageLabel().setText("Choisis une classe !");
-                return;
-            }
-
-            boolean succes = PersonnageDAO.creerPersonnage(
-                nom, race, classe, niveau, biographie,
-                force, agilite, intelligence, endurance,
-                idUtilisateur
-            );
-
-            if (succes) {
-                app.showProfile(idUtilisateur, username);
-            } else {
-                view.getMessageLabel().setStyle("-fx-text-fill: red;");
-                view.getMessageLabel().setText("Erreur lors de la création !");
-            }
-        });
-=======
 import com.project.jdr.dao.CompetenceDAO;
 import com.project.jdr.dao.FichePersonnageDAO;
 import com.project.jdr.dao.PersonnageDAO;
@@ -103,7 +49,7 @@ public class CreateCharacterController {
             afficherMessageNeutre(view, "");
 
             if (nomCompetence.isEmpty() || descriptionCompetence.isEmpty()) {
-                afficherErreur(view, "Veuillez remplir le nom et la description de la compétence.");
+                afficherErreur(view, "Veuillez remplir le nom et la description de la comp├®tence.");
                 return;
             }
 
@@ -115,7 +61,7 @@ public class CreateCharacterController {
             view.getCompetenceNomField().clear();
             view.getCompetenceDescArea().clear();
 
-            afficherSucces(view, "Compétence ajoutée à la liste.");
+            afficherSucces(view, "Comp├®tence ajout├®e ├á la liste.");
         });
 
         view.getCreateButton().setOnAction(e -> {
@@ -134,7 +80,7 @@ public class CreateCharacterController {
             }
 
             if (niveau < 1) {
-                afficherErreur(view, "Le niveau doit être supérieur ou égal à 1.");
+                afficherErreur(view, "Le niveau doit ├¬tre sup├®rieur ou ├®gal ├á 1.");
                 return;
             }
 
@@ -142,13 +88,13 @@ public class CreateCharacterController {
 
             int idPersonnage = personnageDAO.ajouterPersonnage(personnage, idUtilisateur);
             if (idPersonnage == -1) {
-                afficherErreur(view, "Erreur lors de la création du personnage.");
+                afficherErreur(view, "Erreur lors de la cr├®ation du personnage.");
                 return;
             }
 
             int idFiche = fichePersonnageDAO.creerFichePourPersonnage(idPersonnage);
             if (idFiche == -1) {
-                afficherErreur(view, "Personnage créé, mais erreur lors de la création de la fiche.");
+                afficherErreur(view, "Personnage cr├®├®, mais erreur lors de la cr├®ation de la fiche.");
                 return;
             }
 
@@ -162,7 +108,7 @@ public class CreateCharacterController {
             force.setPosition(30, 30);
             force.setSize(140, 50);
 
-            Stats agilite = new Stats("Agilité", view.getAgilite());
+            Stats agilite = new Stats("Agilit├®", view.getAgilite());
             agilite.setPosition(30, 100);
             agilite.setSize(140, 50);
 
@@ -192,7 +138,7 @@ public class CreateCharacterController {
                 competence.setSize(240, 70);
 
                 if (competenceDAO.ajouterCompetence(competence, idFiche) == -1) {
-                    afficherErreur(view, "Erreur lors de l'enregistrement des compétences.");
+                    afficherErreur(view, "Erreur lors de l'enregistrement des comp├®tences.");
                     return;
                 }
             }
@@ -208,7 +154,7 @@ public class CreateCharacterController {
                 }
             }
 
-            afficherSucces(view, "Personnage créé avec succès.");
+            afficherSucces(view, "Personnage cr├®├® avec succ├¿s.");
             app.showProfile(idUtilisateur, username);
         });
     }
@@ -244,7 +190,7 @@ public class CreateCharacterController {
             view.getCompetencesListBox().getChildren().remove(row);
 
             if (view.getCompetencesListBox().getChildren().isEmpty()) {
-                Label emptyLabel = new Label("Aucune compétence ajoutée.");
+                Label emptyLabel = new Label("Aucune comp├®tence ajout├®e.");
                 emptyLabel.getStyleClass().add("profile-empty-label");
                 view.getCompetencesListBox().getChildren().add(emptyLabel);
             }
@@ -253,7 +199,7 @@ public class CreateCharacterController {
         if (view.getCompetencesListBox().getChildren().size() == 1
                 && view.getCompetencesListBox().getChildren().get(0) instanceof Label) {
             Label first = (Label) view.getCompetencesListBox().getChildren().get(0);
-            if ("Aucune compétence ajoutée.".equals(first.getText())) {
+            if ("Aucune comp├®tence ajout├®e.".equals(first.getText())) {
                 view.getCompetencesListBox().getChildren().clear();
             }
         }
@@ -280,6 +226,5 @@ public class CreateCharacterController {
     private void afficherMessageNeutre(CreateCharacterView view, String message) {
         view.getMessageLabel().setText(message);
         view.getMessageLabel().getStyleClass().removeAll("message-error", "message-success");
->>>>>>> b499372c8c1cc55af69895b48cf9b05636a55e65
     }
 }
