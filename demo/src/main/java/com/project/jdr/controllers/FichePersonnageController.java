@@ -34,9 +34,6 @@ public class FichePersonnageController {
         view.getRetourButton().setOnAction(e ->
                 app.showProfile(idUtilisateur, username));
 
-        view.getModifierButton().setOnAction(e ->
-                app.showModifierPersonnage(personnage, idUtilisateur, username));
-
         view.setOnSupprimerConfirme(() -> {
             personnageDAO.supprimerPersonnage(personnage.getId());
             app.showProfile(idUtilisateur, username);
@@ -58,6 +55,26 @@ public class FichePersonnageController {
             if (ok) {
                 view.supprimerCarteVisuellement(card);
             }
+        });
+
+        // ── Édition inline (double-clic + dialog de confirmation) ─────────
+        view.setOnEditCompetence(c ->
+                competenceDAO.mettreAJourNomEtDescription(c.getId(), c.getNom(), c.getDescription()));
+        view.setOnEditEquipement(eq ->
+                equipementDAO.mettreAJourNomEtDescription(eq.getId(), eq.getNom(), eq.getDescription()));
+        view.setOnEditStats(s ->
+                statsDAO.mettreAJourValeur(s.getId(), s.getValeur()));
+        view.setOnEditNomPersonnage(newNom ->
+                personnageDAO.mettreAJourPersonnage(personnage));
+        view.setOnEditPortrait(p ->
+                portraitDAO.mettreAJourChemin(p.getId(), p.getCheminImage()));
+
+        view.setOnAddPortrait(p -> {
+            FichePersonnage fiche = personnage.getFiche();
+            if (fiche == null) return;
+            int id = portraitDAO.ajouterPortrait(p, fiche.getId());
+            p.setId(id);
+            fiche.setPortrait(p);
         });
     }
 

@@ -17,11 +17,9 @@ import com.project.jdr.controllers.DeleteAccountController;
 import com.project.jdr.controllers.FichePersonnageController;
 import com.project.jdr.controllers.ForgotPasswordController;
 import com.project.jdr.controllers.LoginController;
-import com.project.jdr.controllers.ModifierPersonnageController;
 import com.project.jdr.controllers.ProfileController;
 import com.project.jdr.controllers.RegistrationController;
 import com.project.jdr.views.LoginView;
-import com.project.jdr.views.ModifierPersonnageView;
 import com.project.jdr.views.ProfileView;
 import com.project.jdr.views.RegistrationView;
 import com.project.jdr.dao.PersonnageDAO;
@@ -115,14 +113,6 @@ public class AppTest extends Application {
         DeleteAccountView view = new DeleteAccountView();
         new DeleteAccountController(view, this, idUtilisateur, username);
         Scene scene = createScene(view.getRoot(), 700, 560);
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
-
-    public void showModifierPersonnage(Personnage personnage, int idUtilisateur, String username) {
-        ModifierPersonnageView view = new ModifierPersonnageView(personnage);
-        new ModifierPersonnageController(view, this, personnage, idUtilisateur, username);
-        Scene scene = createScene(view.getRoot(), 700, 500);
         primaryStage.setScene(scene);
         primaryStage.show();
     }

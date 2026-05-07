@@ -10,24 +10,32 @@ import com.project.jdr.model.Stats;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Window;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -45,34 +53,44 @@ public class FichePersonnageView {
     private final Pane   canvas;
     private final Button sauvegarderButton;
     private final Button retourButton;
-    private final Button modifierButton;
     private final Button supprimerButton;
+    private final Button addPhotoButton;
 
-    // ── Corbeille — texte simple à la place de l'emoji ────────────────────
     private final Label corbeilleLabel = new Label("SUPPR");
-    private boolean corbeilleActive    = false;
 
-    private final List<FicheCard>     cards    = new ArrayList<>();
-    private Runnable                  onSupprimerConfirme;
-    private Consumer<FicheCard>       onSupprimerCarte;
+    private final List<FicheCard> cards = new ArrayList<>();
+    private Runnable                onSupprimerConfirme;
+    private Consumer<FicheCard>     onSupprimerCarte;
+
+    private final Personnage personnageRef;
+    private Portrait         portraitRef;
+    private Label            titreLabel;
+    private FicheCard        portraitCard;
+    private VBox             portraitContent;
+
+    private Consumer<Competence> onEditCompetence;
+    private Consumer<Equipement> onEditEquipement;
+    private Consumer<Stats>      onEditStats;
+    private Consumer<String>     onEditNomPersonnage;
+    private Consumer<Portrait>   onEditPortrait;
+    private Consumer<Portrait>   onAddPortrait;
 
     public FichePersonnageView(Personnage personnage) {
+
+        this.personnageRef = personnage;
 
         retourButton = new Button("<- Retour");
         retourButton.getStyleClass().add("btn-secondary");
 
-        Label titre = new Label(personnage.getNom() + "  -  Fiche personnage");
-        titre.setStyle(
+        titreLabel = new Label(personnage.getNom() + "  -  Fiche personnage");
+        titreLabel.setStyle(
             "-fx-font-size: 16px; -fx-font-weight: bold;" +
             "-fx-text-fill: #ffd700; -fx-font-family: Arial;"
         );
-        HBox.setHgrow(titre, Priority.ALWAYS);
+        HBox.setHgrow(titreLabel, Priority.ALWAYS);
 
         sauvegarderButton = new Button("Sauvegarder");
         sauvegarderButton.getStyleClass().add("btn-primary");
-
-        modifierButton = new Button("Modifier");
-        modifierButton.getStyleClass().add("btn-secondary");
 
         supprimerButton = new Button("Supprimer");
         supprimerButton.setStyle(
@@ -96,20 +114,21 @@ public class FichePersonnageView {
                 "Cette action est irreversible. " +
                 "Toutes les donnees du personnage seront supprimees."
             );
-            alert.getDialogPane().setStyle(
-                "-fx-background-color: #1e1e2f;" +
-                "-fx-border-color: rgba(231,76,60,0.35);" +
-                "-fx-border-width: 1;"
-            );
-            alert.getDialogPane().lookupAll(".label").forEach(n ->
-                    n.setStyle("-fx-text-fill: #ffffff; -fx-font-family: Arial;"));
+            styliserDialog(alert, "rgba(231,76,60,0.35)");
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 if (onSupprimerConfirme != null) onSupprimerConfirme.run();
             }
         });
 
-        HBox topBar = new HBox(12, retourButton, titre, modifierButton, sauvegarderButton, supprimerButton);
+        Label hint = new Label("Astuce : double-clic sur un element pour le modifier");
+        hint.setStyle("-fx-font-size: 10px; -fx-text-fill: rgba(255,255,255,0.30); -fx-font-family: Arial;");
+
+        addPhotoButton = new Button("Ajouter photo");
+        addPhotoButton.getStyleClass().add("btn-secondary");
+        addPhotoButton.setOnAction(e -> startPortraitEdit(addPhotoButton));
+
+        HBox topBar = new HBox(12, retourButton, titreLabel, hint, addPhotoButton, sauvegarderButton, supprimerButton);
         topBar.setAlignment(Pos.CENTER_LEFT);
         topBar.setPadding(new Insets(12, 20, 12, 20));
         topBar.setStyle(
@@ -163,13 +182,7 @@ public class FichePersonnageView {
                 alert.setTitle("Supprimer l'element");
                 alert.setHeaderText("Supprimer cet element ?");
                 alert.setContentText("Cette action supprimera definitivement cet element de la fiche.");
-                alert.getDialogPane().setStyle(
-                    "-fx-background-color: #1e1e2f;" +
-                    "-fx-border-color: rgba(231,76,60,0.35);" +
-                    "-fx-border-width: 1;"
-                );
-                alert.getDialogPane().lookupAll(".label").forEach(n ->
-                        n.setStyle("-fx-text-fill: #ffffff; -fx-font-family: Arial;"));
+                styliserDialog(alert, "rgba(231,76,60,0.35)");
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.isPresent() && result.get() == ButtonType.OK) {
@@ -236,7 +249,9 @@ public class FichePersonnageView {
     private void buildCards(FichePersonnage fiche, Personnage personnage) {
         Portrait portrait = fiche.getPortrait();
         if (portrait != null) {
+            this.portraitRef = portrait;
             FicheCard card = buildPortraitCard(portrait, personnage);
+            this.portraitCard = card;
             placeCard(card, portrait.getX(), portrait.getY(), portrait.getWidth(), portrait.getHeight());
             register(card);
         }
@@ -285,7 +300,33 @@ public class FichePersonnageView {
         content.setAlignment(Pos.CENTER);
         content.setMaxWidth(Double.MAX_VALUE);
         content.setMaxHeight(Double.MAX_VALUE);
+        this.portraitContent = content;
 
+        rebuildPortraitImage(content, portrait, personnage);
+
+        Label nomLabel = new Label(personnage.getNom());
+        nomLabel.setStyle(
+            "-fx-font-size: 13px; -fx-font-weight: bold;" +
+            "-fx-text-fill: rgba(255,255,255,0.90); -fx-font-family: Arial;" +
+            "-fx-cursor: text;"
+        );
+        nomLabel.setWrapText(true);
+        nomLabel.maxWidthProperty().bind(content.widthProperty());
+        attachInlineEdit(nomLabel, newNom -> {
+            personnageRef.setNom(newNom);
+            if (titreLabel != null) titreLabel.setText(newNom + "  -  Fiche personnage");
+            if (onEditNomPersonnage != null) onEditNomPersonnage.accept(newNom);
+        });
+        content.getChildren().add(nomLabel);
+
+        return new FicheCard("Portrait", content, portrait.getId(), "portrait", CardColor.GOLD);
+    }
+
+    private void rebuildPortraitImage(VBox content, Portrait portrait, Personnage personnage) {
+        Node first = content.getChildren().isEmpty() ? null : content.getChildren().get(0);
+        boolean hasImageOrPlaceholder = first instanceof ImageView || first instanceof Label && content.getChildren().size() > 1;
+
+        Node imageNode;
         File f = new File(portrait.getCheminImage() != null ? portrait.getCheminImage() : "");
         if (f.exists()) {
             ImageView iv = new ImageView(new Image(f.toURI().toString()));
@@ -296,7 +337,9 @@ public class FichePersonnageView {
                     iv.setFitWidth(Math.max(40, n.doubleValue() - 24)));
             content.heightProperty().addListener((obs, o, n) ->
                     iv.setFitHeight(Math.max(40, n.doubleValue() - 50)));
-            content.getChildren().add(iv);
+            iv.setStyle("-fx-cursor: hand;");
+            attachPortraitEdit(iv);
+            imageNode = iv;
         } else {
             Label init = new Label(personnage.getNom().length() >= 2
                     ? personnage.getNom().substring(0, 2).toUpperCase()
@@ -311,21 +354,18 @@ public class FichePersonnageView {
                 "-fx-border-color: rgba(255,152,0,0.20);" +
                 "-fx-border-width: 1;" +
                 "-fx-border-radius: 8;" +
-                "-fx-background-radius: 8;"
+                "-fx-background-radius: 8;" +
+                "-fx-cursor: hand;"
             );
-            content.getChildren().add(init);
+            attachPortraitEdit(init);
+            imageNode = init;
         }
 
-        Label nomLabel = new Label(personnage.getNom());
-        nomLabel.setStyle(
-            "-fx-font-size: 13px; -fx-font-weight: bold;" +
-            "-fx-text-fill: rgba(255,255,255,0.90); -fx-font-family: Arial;"
-        );
-        nomLabel.setWrapText(true);
-        nomLabel.maxWidthProperty().bind(content.widthProperty());
-        content.getChildren().add(nomLabel);
-
-        return new FicheCard("Portrait", content, portrait.getId(), "portrait", CardColor.GOLD);
+        if (hasImageOrPlaceholder) {
+            content.getChildren().set(0, imageNode);
+        } else {
+            content.getChildren().add(0, imageNode);
+        }
     }
 
     private FicheCard buildStatsCard(List<Stats> statsList) {
@@ -350,16 +390,15 @@ public class FichePersonnageView {
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.ALWAYS);
 
-            // ── Étoiles remplacées par des barres ─────────────────────────
-            Label stars = new Label(buildStars(stat.getValeur()));
-            stars.setStyle("-fx-font-size: 14px; -fx-text-fill: #ffd700; -fx-font-family: Arial;");
+            Label stars = new Label(String.valueOf(stat.getValeur()));
+            stars.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #ffd700; -fx-font-family: Arial; -fx-cursor: hand;");
 
             content.widthProperty().addListener((obs, o, n) -> {
                 double w = n.doubleValue();
                 double starSize = clamp(12 + (w - 140) / 260.0 * 10, 12, 22);
                 double nomSize  = clamp(8  + (w - 140) / 260.0 * 4,  8,  12);
                 stars.setStyle(String.format(
-                    "-fx-font-size: %.0fpx; -fx-text-fill: #ffd700; -fx-font-family: Arial;", starSize));
+                    "-fx-font-size: %.0fpx; -fx-font-weight: bold; -fx-text-fill: #ffd700; -fx-font-family: Arial; -fx-cursor: hand;", starSize));
                 nom.setStyle(String.format(
                     "-fx-font-size: %.0fpx; -fx-font-weight: bold;" +
                     "-fx-text-fill: rgba(255,215,0,0.50);" +
@@ -367,6 +406,7 @@ public class FichePersonnageView {
             });
 
             row.getChildren().addAll(nom, spacer, stars);
+            attachStatsEdit(row, stars, stat);
 
             Region rowSep = new Region();
             rowSep.setPrefHeight(1);
@@ -397,20 +437,29 @@ public class FichePersonnageView {
             double descSize = clamp(10 + (w - 140) / 260.0 * 3, 10, 14);
             nomLabel.setStyle(String.format(
                 "-fx-font-size: %.0fpx; -fx-font-weight: bold;" +
-                "-fx-text-fill: rgba(255,255,255,0.90); -fx-font-family: Arial;", nomSize));
+                "-fx-text-fill: rgba(255,255,255,0.90); -fx-font-family: Arial; -fx-cursor: text;", nomSize));
             descLabel.setStyle(String.format(
                 "-fx-font-size: %.0fpx;" +
-                "-fx-text-fill: rgba(255,255,255,0.45); -fx-font-family: Arial;", descSize));
+                "-fx-text-fill: rgba(255,255,255,0.45); -fx-font-family: Arial; -fx-cursor: text;", descSize));
         });
 
         nomLabel.setStyle(
             "-fx-font-size: 13px; -fx-font-weight: bold;" +
-            "-fx-text-fill: rgba(255,255,255,0.90); -fx-font-family: Arial;"
+            "-fx-text-fill: rgba(255,255,255,0.90); -fx-font-family: Arial; -fx-cursor: text;"
         );
         descLabel.setStyle(
             "-fx-font-size: 12px;" +
-            "-fx-text-fill: rgba(255,255,255,0.45); -fx-font-family: Arial;"
+            "-fx-text-fill: rgba(255,255,255,0.45); -fx-font-family: Arial; -fx-cursor: text;"
         );
+
+        attachInlineEdit(nomLabel, newVal -> {
+            c.setNom(newVal);
+            if (onEditCompetence != null) onEditCompetence.accept(c);
+        });
+        attachInlineEdit(descLabel, newVal -> {
+            c.setDescription(newVal);
+            if (onEditCompetence != null) onEditCompetence.accept(c);
+        });
 
         content.getChildren().addAll(nomLabel, descLabel);
         return new FicheCard("Competence", content, c.getId(), "competence", CardColor.PURPLE);
@@ -434,35 +483,329 @@ public class FichePersonnageView {
             double descSize = clamp(10 + (w - 140) / 260.0 * 3, 10, 14);
             nomLabel.setStyle(String.format(
                 "-fx-font-size: %.0fpx; -fx-font-weight: bold;" +
-                "-fx-text-fill: rgba(255,255,255,0.90); -fx-font-family: Arial;", nomSize));
+                "-fx-text-fill: rgba(255,255,255,0.90); -fx-font-family: Arial; -fx-cursor: text;", nomSize));
             descLabel.setStyle(String.format(
                 "-fx-font-size: %.0fpx;" +
-                "-fx-text-fill: rgba(255,255,255,0.45); -fx-font-family: Arial;", descSize));
+                "-fx-text-fill: rgba(255,255,255,0.45); -fx-font-family: Arial; -fx-cursor: text;", descSize));
         });
 
         nomLabel.setStyle(
             "-fx-font-size: 13px; -fx-font-weight: bold;" +
-            "-fx-text-fill: rgba(255,255,255,0.90); -fx-font-family: Arial;"
+            "-fx-text-fill: rgba(255,255,255,0.90); -fx-font-family: Arial; -fx-cursor: text;"
         );
         descLabel.setStyle(
             "-fx-font-size: 12px;" +
-            "-fx-text-fill: rgba(255,255,255,0.45); -fx-font-family: Arial;"
+            "-fx-text-fill: rgba(255,255,255,0.45); -fx-font-family: Arial; -fx-cursor: text;"
         );
+
+        attachInlineEdit(nomLabel, newVal -> {
+            e.setNom(newVal);
+            if (onEditEquipement != null) onEditEquipement.accept(e);
+        });
+        attachInlineEdit(descLabel, newVal -> {
+            e.setDescription(newVal);
+            if (onEditEquipement != null) onEditEquipement.accept(e);
+        });
 
         content.getChildren().addAll(nomLabel, descLabel);
         return new FicheCard("Equipement", content, e.getId(), "equipement", CardColor.ORANGE);
     }
 
-    // ── Étoiles remplacées par des [ ] et [X] ─────────────────────────────
-    private String buildStars(int v) {
-        v = Math.max(0, Math.min(5, v));
-        StringBuilder sb = new StringBuilder();
-        for (int i = 1; i <= 5; i++) {
-            sb.append(i <= v ? "[X]" : "[ ]");
-            if (i < 5) sb.append(" ");
+    // ─────────────────────────────────────────────────────────────────────
+    //  Édition inline
+    // ─────────────────────────────────────────────────────────────────────
+
+    private FicheCard findEnclosingCard(Node n) {
+        Node cur = n;
+        while (cur != null) {
+            if (cur instanceof FicheCard fc) return fc;
+            cur = cur.getParent();
         }
-        return sb.toString();
+        return null;
     }
+
+    private void attachInlineEdit(Label label, Consumer<String> onCommit) {
+        label.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2) {
+                startInlineEdit(label, onCommit);
+                e.consume();
+            }
+        });
+    }
+
+    private void startInlineEdit(Label label, Consumer<String> onCommit) {
+        if (!(label.getParent() instanceof Pane parent)) return;
+        int index = parent.getChildren().indexOf(label);
+        if (index < 0) return;
+
+        FicheCard enclosing = findEnclosingCard(label);
+        if (enclosing != null) enclosing.setEditing(true);
+
+        String original = label.getText();
+        TextField field = new TextField(original);
+        field.setStyle(
+            "-fx-background-color: rgba(255,255,255,0.08);" +
+            "-fx-border-color: rgba(255,215,0,0.65);" +
+            "-fx-border-width: 1.5;" +
+            "-fx-border-radius: 6;" +
+            "-fx-background-radius: 6;" +
+            "-fx-text-fill: #ffffff;" +
+            "-fx-padding: 4 8 4 8;" +
+            "-fx-font-family: Arial;"
+        );
+        field.setMaxWidth(Double.MAX_VALUE);
+
+        boolean[] resolving = { false };
+
+        Runnable[] askRef = new Runnable[1];
+        askRef[0] = () -> {
+            if (resolving[0]) return;
+            resolving[0] = true;
+            String saisie = field.getText();
+            if (saisie.equals(original)) {
+                restoreLabel(parent, field, label, original);
+                if (enclosing != null) enclosing.setEditing(false);
+                resolving[0] = false;
+                return;
+            }
+            DialogResult r = demanderConfirmation("la modification de cet element", original, saisie);
+            switch (r) {
+                case CONFIRMER -> {
+                    label.setText(saisie);
+                    restoreLabel(parent, field, label, saisie);
+                    if (enclosing != null) enclosing.setEditing(false);
+                    onCommit.accept(saisie);
+                }
+                case CONTINUER -> {
+                    resolving[0] = false;
+                    field.requestFocus();
+                    field.positionCaret(field.getText().length());
+                }
+                case ANNULER -> {
+                    restoreLabel(parent, field, label, original);
+                    if (enclosing != null) enclosing.setEditing(false);
+                }
+            }
+        };
+
+        field.setOnAction(e -> askRef[0].run());
+        field.focusedProperty().addListener((obs, was, now) -> {
+            if (!now && !resolving[0]) askRef[0].run();
+        });
+        field.addEventFilter(KeyEvent.KEY_PRESSED, ev -> {
+            if (ev.getCode() == KeyCode.ESCAPE) {
+                resolving[0] = true;
+                restoreLabel(parent, field, label, original);
+                if (enclosing != null) enclosing.setEditing(false);
+                ev.consume();
+            }
+        });
+        field.addEventFilter(MouseEvent.MOUSE_PRESSED,  MouseEvent::consume);
+        field.addEventFilter(MouseEvent.MOUSE_DRAGGED,  MouseEvent::consume);
+        field.addEventFilter(MouseEvent.MOUSE_RELEASED, MouseEvent::consume);
+
+        parent.getChildren().set(index, field);
+        field.requestFocus();
+        field.selectAll();
+    }
+
+    private void restoreLabel(Pane parent, Node currentEditor, Label label, String text) {
+        int idx = parent.getChildren().indexOf(currentEditor);
+        if (idx >= 0) {
+            label.setText(text);
+            parent.getChildren().set(idx, label);
+        }
+    }
+
+    private void attachStatsEdit(HBox row, Label valueLabel, Stats stat) {
+        valueLabel.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2) {
+                startStatsEdit(row, valueLabel, stat);
+                e.consume();
+            }
+        });
+    }
+
+    private void startStatsEdit(HBox row, Label valueLabel, Stats stat) {
+        int index = row.getChildren().indexOf(valueLabel);
+        if (index < 0) return;
+
+        FicheCard enclosing = findEnclosingCard(valueLabel);
+        if (enclosing != null) enclosing.setEditing(true);
+
+        int original = stat.getValeur();
+        Spinner<Integer> spinner = new Spinner<>(1, Integer.MAX_VALUE, Math.max(1, original));
+        spinner.setEditable(true);
+        spinner.setPrefWidth(90);
+        spinner.setMaxWidth(90);
+
+        boolean[] resolving = { false };
+
+        Runnable[] askRef = new Runnable[1];
+        askRef[0] = () -> {
+            if (resolving[0]) return;
+            resolving[0] = true;
+            int saisie = spinner.getValue();
+            if (saisie == original) {
+                restoreStatsLabel(row, spinner, valueLabel, original);
+                if (enclosing != null) enclosing.setEditing(false);
+                resolving[0] = false;
+                return;
+            }
+            DialogResult r = demanderConfirmation("la modification de cette statistique",
+                    String.valueOf(original), String.valueOf(saisie));
+            switch (r) {
+                case CONFIRMER -> {
+                    stat.setValeur(saisie);
+                    restoreStatsLabel(row, spinner, valueLabel, saisie);
+                    if (enclosing != null) enclosing.setEditing(false);
+                    if (onEditStats != null) onEditStats.accept(stat);
+                }
+                case CONTINUER -> {
+                    resolving[0] = false;
+                    spinner.requestFocus();
+                }
+                case ANNULER -> {
+                    restoreStatsLabel(row, spinner, valueLabel, original);
+                    if (enclosing != null) enclosing.setEditing(false);
+                }
+            }
+        };
+
+        spinner.focusedProperty().addListener((obs, was, now) -> {
+            if (!now && !resolving[0]) askRef[0].run();
+        });
+        spinner.getEditor().setOnAction(e -> askRef[0].run());
+        spinner.addEventFilter(KeyEvent.KEY_PRESSED, ev -> {
+            if (ev.getCode() == KeyCode.ESCAPE) {
+                resolving[0] = true;
+                restoreStatsLabel(row, spinner, valueLabel, original);
+                if (enclosing != null) enclosing.setEditing(false);
+                ev.consume();
+            } else if (ev.getCode() == KeyCode.ENTER) {
+                askRef[0].run();
+                ev.consume();
+            }
+        });
+        spinner.addEventFilter(MouseEvent.MOUSE_PRESSED,  MouseEvent::consume);
+        spinner.addEventFilter(MouseEvent.MOUSE_DRAGGED,  MouseEvent::consume);
+        spinner.addEventFilter(MouseEvent.MOUSE_RELEASED, MouseEvent::consume);
+
+        row.getChildren().set(index, spinner);
+        spinner.requestFocus();
+    }
+
+    private void restoreStatsLabel(HBox row, Spinner<Integer> spinner, Label valueLabel, int newValue) {
+        int idx = row.getChildren().indexOf(spinner);
+        if (idx >= 0) {
+            valueLabel.setText(String.valueOf(newValue));
+            row.getChildren().set(idx, valueLabel);
+        }
+    }
+
+    private void attachPortraitEdit(Node imageNode) {
+        imageNode.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2) {
+                startPortraitEdit(imageNode);
+                e.consume();
+            }
+        });
+    }
+
+    private void startPortraitEdit(Node imageNode) {
+        Window owner = imageNode.getScene() != null ? imageNode.getScene().getWindow() : null;
+
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Choisir une nouvelle photo");
+        chooser.getExtensionFilters().add(
+            new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp")
+        );
+        File initial = (portraitRef != null && portraitRef.getCheminImage() != null)
+                ? new File(portraitRef.getCheminImage()) : null;
+        if (initial != null && initial.exists() && initial.getParentFile() != null) {
+            chooser.setInitialDirectory(initial.getParentFile());
+        }
+
+        File chosen = chooser.showOpenDialog(owner);
+        if (chosen == null) return;
+
+        String original = (portraitRef != null && portraitRef.getCheminImage() != null)
+                ? portraitRef.getCheminImage() : "(aucune)";
+        DialogResult r = demanderConfirmation("le changement de photo",
+                original, chosen.getAbsolutePath());
+
+        switch (r) {
+            case CONFIRMER -> {
+                if (portraitRef == null) {
+                    Portrait p = new Portrait(chosen.getAbsolutePath());
+                    p.setX(20);
+                    p.setY(20);
+                    p.setWidth(200);
+                    p.setHeight(240);
+                    if (onAddPortrait != null) onAddPortrait.accept(p);
+                    portraitRef  = p;
+                    FicheCard card = buildPortraitCard(p, personnageRef);
+                    portraitCard = card;
+                    placeCard(card, p.getX(), p.getY(), p.getWidth(), p.getHeight());
+                    register(card);
+                } else {
+                    portraitRef.setCheminImage(chosen.getAbsolutePath());
+                    rebuildPortraitImage(portraitContent, portraitRef, personnageRef);
+                    if (onEditPortrait != null) onEditPortrait.accept(portraitRef);
+                }
+            }
+            case CONTINUER -> startPortraitEdit(imageNode);
+            case ANNULER   -> { /* rien a faire */ }
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────
+    //  Dialogue de confirmation 3 boutons
+    // ─────────────────────────────────────────────────────────────────────
+
+    private enum DialogResult { CONFIRMER, CONTINUER, ANNULER }
+
+    private DialogResult demanderConfirmation(String quoi, String avant, String apres) {
+        ButtonType btnConfirmer = new ButtonType("Confirmer la modification", ButtonBar.ButtonData.OK_DONE);
+        ButtonType btnContinuer = new ButtonType("Continuer a modifier",      ButtonBar.ButtonData.OTHER);
+        ButtonType btnAnnuler   = new ButtonType("Annuler la modification",   ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmer la modification");
+        alert.setHeaderText("Confirmer " + quoi + " ?");
+
+        String avantAffiche = tronquer(avant, 80);
+        String apresAffiche = tronquer(apres, 80);
+        alert.setContentText("Avant : " + avantAffiche + "\n\nApres : " + apresAffiche);
+
+        alert.getButtonTypes().setAll(btnConfirmer, btnContinuer, btnAnnuler);
+        styliserDialog(alert, "rgba(255,215,0,0.30)");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isEmpty()) return DialogResult.ANNULER;
+        ButtonType bt = result.get();
+        if (bt == btnConfirmer) return DialogResult.CONFIRMER;
+        if (bt == btnContinuer) return DialogResult.CONTINUER;
+        return DialogResult.ANNULER;
+    }
+
+    private String tronquer(String s, int max) {
+        if (s == null) return "";
+        if (s.length() <= max) return s;
+        return s.substring(0, max - 3) + "...";
+    }
+
+    private void styliserDialog(Alert alert, String borderColor) {
+        alert.getDialogPane().setStyle(
+            "-fx-background-color: #1e1e2f;" +
+            "-fx-border-color: " + borderColor + ";" +
+            "-fx-border-width: 1;"
+        );
+        alert.getDialogPane().lookupAll(".label").forEach(n ->
+                n.setStyle("-fx-text-fill: #ffffff; -fx-font-family: Arial;"));
+    }
+
+    // ─────────────────────────────────────────────────────────────────────
 
     private double clamp(double val, double min, double max) {
         return Math.max(min, Math.min(max, val));
@@ -471,12 +814,18 @@ public class FichePersonnageView {
     public Parent          getRoot()               { return root; }
     public Button          getSauvegarderButton()  { return sauvegarderButton; }
     public Button          getRetourButton()       { return retourButton; }
-    public Button          getModifierButton()     { return modifierButton; }
     public Button          getSupprimerButton()    { return supprimerButton; }
     public List<FicheCard> getCards()              { return cards; }
 
     public void setOnSupprimerConfirme(Runnable r)           { this.onSupprimerConfirme = r; }
     public void setOnSupprimerCarte(Consumer<FicheCard> c)   { this.onSupprimerCarte = c; }
+
+    public void setOnEditCompetence(Consumer<Competence> c)  { this.onEditCompetence = c; }
+    public void setOnEditEquipement(Consumer<Equipement> c)  { this.onEditEquipement = c; }
+    public void setOnEditStats(Consumer<Stats> c)            { this.onEditStats = c; }
+    public void setOnEditNomPersonnage(Consumer<String> c)   { this.onEditNomPersonnage = c; }
+    public void setOnEditPortrait(Consumer<Portrait> c)      { this.onEditPortrait = c; }
+    public void setOnAddPortrait(Consumer<Portrait> c)       { this.onAddPortrait = c; }
 
     public enum CardColor { GOLD, PURPLE, ORANGE }
 
@@ -491,6 +840,7 @@ public class FichePersonnageView {
         private boolean dragging = false;
         private double  pressW, pressH;
         private ResizeEdge edge = ResizeEdge.NONE;
+        private boolean editing = false;
 
         private enum ResizeEdge { NONE, N, S, E, W, NE, NW, SE, SW }
 
@@ -521,7 +871,6 @@ public class FichePersonnageView {
 
             HBox headerRow;
             if ("competence".equals(type) || "equipement".equals(type)) {
-                // ── Hint sans emoji ────────────────────────────────────────
                 Label ctrlHint = new Label("Ctrl+drag pour supprimer");
                 ctrlHint.setStyle(
                     "-fx-font-size: 8px;" +
@@ -572,11 +921,14 @@ public class FichePersonnageView {
             }
 
             addEventFilter(MouseEvent.MOUSE_MOVED, e -> {
+                if (editing) return;
                 ResizeEdge detected = detectEdge(e.getX(), e.getY());
                 setCursor(detected == ResizeEdge.NONE ? Cursor.DEFAULT : cursorFor(detected));
             });
 
             addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
+                if (editing) return;
+                if (e.getClickCount() >= 2) return;  // laisser passer le double-clic
                 toFront();
                 pressSceneX  = e.getSceneX();
                 pressSceneY  = e.getSceneY();
@@ -591,6 +943,8 @@ public class FichePersonnageView {
             });
 
             addEventFilter(MouseEvent.MOUSE_DRAGGED, e -> {
+                if (editing) return;
+                if (e.getClickCount() >= 2) return;
                 double dx = e.getSceneX() - pressSceneX;
                 double dy = e.getSceneY() - pressSceneY;
                 if (dragging) {
@@ -603,6 +957,11 @@ public class FichePersonnageView {
             });
 
             addEventFilter(MouseEvent.MOUSE_RELEASED, e -> {
+                if (editing) return;
+                if (e.getClickCount() >= 2) {
+                    applyStyle(false);
+                    return;
+                }
                 dragging = false;
                 edge     = ResizeEdge.NONE;
                 applyStyle(false);
@@ -610,8 +969,15 @@ public class FichePersonnageView {
             });
 
             addEventFilter(MouseEvent.MOUSE_EXITED, e -> {
+                if (editing) return;
                 if (!dragging && edge == ResizeEdge.NONE) setCursor(Cursor.DEFAULT);
             });
+        }
+
+        public void setEditing(boolean editing) {
+            this.editing = editing;
+            if (editing) applyEditingStyle(); else applyStyle(false);
+            toFront();
         }
 
         private String accentColor() {
@@ -635,6 +1001,22 @@ public class FichePersonnageView {
             };
         }
 
+        private String editingBorderColor() {
+            return switch (color) {
+                case GOLD   -> "rgba(255,215,0,0.85)";
+                case PURPLE -> "rgba(180,150,240,0.85)";
+                case ORANGE -> "rgba(255,170,30,0.85)";
+            };
+        }
+
+        private String editingShadowColor() {
+            return switch (color) {
+                case GOLD   -> "rgba(255,215,0,0.55)";
+                case PURPLE -> "rgba(160,130,220,0.55)";
+                case ORANGE -> "rgba(255,152,0,0.55)";
+            };
+        }
+
         private void applyStyle(boolean active) {
             setStyle(
                 "-fx-background-color: rgba(10,9,20," + (active ? "0.95" : "0.85") + ");" +
@@ -642,9 +1024,22 @@ public class FichePersonnageView {
                 "-fx-border-width: 1;" +
                 "-fx-border-radius: 10;" +
                 "-fx-background-radius: 10;" +
+                "-fx-translate-y: 0;" +
                 (active
                     ? "-fx-effect: dropshadow(gaussian,rgba(0,0,0,0.60),14,0,0,3);"
                     : "-fx-effect: dropshadow(gaussian,rgba(0,0,0,0.40),8,0,0,2);")
+            );
+        }
+
+        private void applyEditingStyle() {
+            setStyle(
+                "-fx-background-color: rgba(20,18,32,0.98);" +
+                "-fx-border-color: " + editingBorderColor() + ";" +
+                "-fx-border-width: 2;" +
+                "-fx-border-radius: 10;" +
+                "-fx-background-radius: 10;" +
+                "-fx-translate-y: -4;" +
+                "-fx-effect: dropshadow(gaussian," + editingShadowColor() + ",28,0.45,0,8);"
             );
         }
 

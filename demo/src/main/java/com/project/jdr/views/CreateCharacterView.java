@@ -63,90 +63,26 @@ public class CreateCharacterView {
     // Message
     private Label messageLabel;
 
-    // StarRating avec boutons simples
+    // Sélecteur de valeur entière (1 a infini) — anciennement StarRating
     public static class StarRating extends HBox {
 
-        private static final int    MAX          = 5;
-        private static final String COLOR_ACTIVE = "#ffd700";
-        private static final String COLOR_HOVER  = "#ffdd55";
-        private static final String COLOR_EMPTY  = "rgba(255,255,255,0.20)";
-
-        private final Label[] stars  = new Label[MAX];
-        private int           value  = 1;
-        private int           hoverIndex = -1;
+        private final Spinner<Integer> spinner;
 
         public StarRating()            { this(1); }
         public StarRating(int initial) {
             super(0);
             setAlignment(Pos.CENTER_LEFT);
-            setSpacing(0);
-            this.value = clamp(initial);
 
-            for (int i = 0; i < MAX; i++) {
-                Label star = new Label("[" + (i + 1) + "]");
-                star.setPadding(new Insets(2, 5, 2, 5));
-                star.setCursor(javafx.scene.Cursor.HAND);
-                star.setMouseTransparent(false);
-                stars[i] = star;
-            }
+            spinner = new Spinner<>(1, Integer.MAX_VALUE, Math.max(1, initial));
+            spinner.setEditable(true);
+            spinner.setPrefWidth(110);
+            spinner.setMaxWidth(110);
 
-            getChildren().addAll(stars);
-
-            setOnMouseMoved(e -> {
-                int idx = getStarIndexAt(e.getX());
-                if (idx != hoverIndex) {
-                    hoverIndex = idx;
-                    repaint();
-                }
-            });
-
-            setOnMouseExited(e -> {
-                hoverIndex = -1;
-                repaint();
-            });
-
-            setOnMouseClicked(e -> {
-                int idx = getStarIndexAt(e.getX());
-                if (idx >= 0) setValue(idx + 1);
-            });
-
-            repaint();
+            getChildren().add(spinner);
         }
 
-        private int getStarIndexAt(double x) {
-            for (int i = 0; i < MAX; i++) {
-                Label s = stars[i];
-                if (x >= s.getBoundsInParent().getMinX()
-                        && x <= s.getBoundsInParent().getMaxX()) {
-                    return i;
-                }
-            }
-            if (x < stars[0].getBoundsInParent().getMinX()) return 0;
-            if (x > stars[MAX-1].getBoundsInParent().getMaxX()) return MAX - 1;
-            return -1;
-        }
-
-        private void repaint() {
-            int fill = (hoverIndex >= 0) ? hoverIndex + 1 : value;
-            String color = (hoverIndex >= 0) ? COLOR_HOVER : COLOR_ACTIVE;
-            for (int i = 0; i < MAX; i++) {
-                stars[i].setStyle(
-                    "-fx-font-size: 18px; -fx-font-weight: bold;" +
-                    "-fx-font-family: Arial;" +
-                    "-fx-text-fill: " + (i < fill ? color : COLOR_EMPTY) + ";"
-                );
-            }
-        }
-
-        public void setValue(int val) {
-            this.value = clamp(val);
-            hoverIndex = -1;
-            repaint();
-        }
-
-        public int getValue() { return value; }
-
-        private static int clamp(int v) { return Math.max(1, Math.min(MAX, v)); }
+        public void setValue(int val) { spinner.getValueFactory().setValue(Math.max(1, val)); }
+        public int  getValue()        { return spinner.getValue(); }
     }
 
     public CreateCharacterView() {
@@ -322,14 +258,6 @@ public class CreateCharacterView {
         biographieArea.setPrefRowCount(4);
         biographieArea.setWrapText(true);
         biographieArea.setMaxWidth(Double.MAX_VALUE);
-        biographieArea.setStyle(
-            "-fx-text-fill: #000000;" +
-            "-fx-background-color: #ffffff;" +
-            "-fx-background-radius: 10;" +
-            "-fx-border-radius: 10;" +
-            "-fx-font-size: 13px;" +
-            "-fx-font-family: Arial;"
-        );
 
         card.getChildren().addAll(sectionTitle, biographieArea);
         return card;
@@ -380,14 +308,6 @@ public class CreateCharacterView {
         competenceDescArea.setPrefRowCount(2);
         competenceDescArea.setWrapText(true);
         competenceDescArea.setMaxWidth(Double.MAX_VALUE);
-        competenceDescArea.setStyle(
-            "-fx-text-fill: #000000;" +
-            "-fx-background-color: #ffffff;" +
-            "-fx-background-radius: 10;" +
-            "-fx-border-radius: 10;" +
-            "-fx-font-size: 13px;" +
-            "-fx-font-family: Arial;"
-        );
 
         ajouterCompetenceButton = new Button("+ Ajouter");
         ajouterCompetenceButton.getStyleClass().add("btn-secondary");
